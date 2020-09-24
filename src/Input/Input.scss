@@ -1,0 +1,24 @@
+@import '../styles.scss';
+
+Input {
+  font-family: 'Nunito';
+  color: white;
+  font-weight: 500;
+  font-size: 1.4rem;
+  background-color: $alia-primary;
+  padding: 0.4rem 1.5rem;
+  margin: 3rem;
+  border: none;
+  border-radius: 100px;
+  min-width: 10rem;
+  outline: none;
+
+  &:active,
+  &:hover,
+  &:focus {
+    color: white;
+    background-color: $alia-secondary;
+  }
+
+  transition: all 0.3s;
+}
