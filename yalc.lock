@@ -1,9 +1,0 @@
-{
-  "version": "v1",
-  "packages": {
-    "alia-react": {
-      "signature": "abd482cf6f8793f23647f6c3f7476bc2",
-      "file": true
-    }
-  }
-}
