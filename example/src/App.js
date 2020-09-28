@@ -20,7 +20,7 @@ const multidata = [
     { label: '3:24:07', x: 6, y: 0 }
   ],
   [
-    { label: 'S', x: 0, y: 0 },
+    { label: '3:24:02', x: 0, y: 0 },
     { label: 'M', x: 1, y: 0 },
     { label: 'T', x: 2, y: 0 },
     { label: 'W', x: 3, y: 0 },
@@ -83,9 +83,13 @@ const timeseriesData = [
 ]
 
 const barChartData = {
-  '2019': [0, 0, 21, 45, 63, 30, 90, 21, 45, 63, 32, 21],
-  '2020': [4, 36, 13, 21, 50, 80, 42, 13, 21, 50, 80, 42],
-  Predicted: [56, 72, 24, 31, 60, 56, 84, 24, 31, 60, 56, 84]
+  data: {
+    '2019': [0, 0, 21, 45, 63, 30, 90, 21, 45, 63, 32, 21],
+    '2020': [4, 36, 13, 21, 50, 80, 42, 13, 21, 50, 80, 42],
+    Predicted: [56, 72, 24, 31, 60, 56, 84, 24, 31, 60, 56, 84],
+  }
+  , labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+
 }
 
 const App = () => {
@@ -110,7 +114,7 @@ const App = () => {
     <div>
       <ExampleComponent text='Create React Library Example' />
       <Input></Input>
-      <Button></Button>
+      <Button>Login</Button>
       <div style={{ padding: 25, maxWidth: 700 }}>
         <LineChart
           data={chartData}

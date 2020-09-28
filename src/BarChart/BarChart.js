@@ -2,35 +2,35 @@ import React, { Fragment, useState } from 'react'
 import './BarChart.scss'
 
 export const BarChart = (props) => {
-  const { height, width, padding, data, labels } = props
+  const { height, width, padding, data } = props
 
   if (!data) return null
 
   const initialState2 = {}
-  for (const key in data) {
+  for (const key in data.data) {
     initialState2[key] = true
   }
 
   const [visible, setVisible] = useState(initialState2)
-  console.log(visible)
+  // console.log(visible)
   const colors = ['#55BDC8', '#304e62', '#ABABAB']
   const FONT_SIZE = 12
 
-  let maxY = Math.max(...[].concat(...Object.values(data)))
+  let maxY = Math.max(...[].concat(...Object.values(data.data)))
 
   if (maxY < 1) {
     maxY = 1
   }
 
   const xValues = Math.max(
-    ...Object.keys(data).map((key, idx) => data[key].length)
+    ...Object.keys(data.data).map((key, idx) => data.data[key].length)
   )
 
   const deltaX = (width - 50) / xValues
-  console.log(deltaX)
-  console.log(maxY)
+  // console.log(deltaX)
+  // console.log(maxY)
   // generate [[[[x,y], [x,y]],[xy, xy]], []]
-  const points = Object.values(data).map((series) => {
+  const points = Object.values(data.data).map((series) => {
     return series.map((point, idx) => [
       50 + deltaX * idx + 8,
       height - (point / maxY) * height
@@ -93,9 +93,9 @@ export const BarChart = (props) => {
   const LabelsXAxis = () => {
     const y = height - padding + FONT_SIZE * 2
 
-    return data[0].map((element, index) => {
+    return data.labels.map((element, index) => {
       const x =
-        ((element.x - minX) / (maxX - minX)) * width + 10 - FONT_SIZE / 2
+        ((index - 0) / (12.7 - 0)) * width + 65 - FONT_SIZE / 2
 
       return (
         <text
@@ -109,7 +109,7 @@ export const BarChart = (props) => {
             fontFamily: 'Nunito'
           }}
         >
-          {element.label}
+          {element}
         </text>
       )
     })
@@ -129,7 +129,7 @@ export const BarChart = (props) => {
   return (
     <>
       <div className='phase' style={{ float: 'right', marginBottom: '15px' }}>
-        {Object.keys(data).map((key, idx) => (
+        {Object.keys(data.data).map((key, idx) => (
           <a
             key={idx}
             style={{ color: colors[idx], opacity: visible[key] ? 1 : 0.5 }}
@@ -143,11 +143,11 @@ export const BarChart = (props) => {
         <style>{`.small {color: 'red'} `}</style>
 
         <XAxis />
-        {/* <LabelsXAxis /> */}
+        <LabelsXAxis />
         {/* <YAxis /> */}
         <HorizontalGuides />
         {points.map((series, idx) => {
-          if (visible[Object.keys(data)[idx]]) {
+          if (visible[Object.keys(data.data)[idx]]) {
             return series.map((point, idxline) => {
               // <polyline
               //   key={idx}

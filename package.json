@@ -51,7 +51,6 @@
     "dist"
   ],
   "dependencies": {
-    "alia-react": "file:.yalc/alia-react",
     "node-sass": "^4.14.1"
   }
 }
