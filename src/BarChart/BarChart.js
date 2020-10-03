@@ -16,7 +16,9 @@ export const BarChart = (props) => {
   const colors = ['#55BDC8', '#304e62', '#ABABAB']
   const FONT_SIZE = 12
 
-  let maxY = Math.max(...[].concat(...Object.values(data.data)))
+  const maxValue = Math.max(...[].concat(...Object.values(data.data)))
+  const zeros = 10 ** (maxValue.toFixed().toString().length - 1)
+  let maxY = (Math.ceil(maxValue / zeros) * zeros)
 
   if (maxY < 1) {
     maxY = 1
@@ -48,7 +50,7 @@ export const BarChart = (props) => {
   )
 
   const XAxis = () => (
-    <Axis points={`${padding},${height + 5} ${width},${height + 5}`} />
+    <Axis points={`${padding},${height + 36} ${width},${height + 36}`} />
   )
 
   const HorizontalGuides = () => {
@@ -60,7 +62,7 @@ export const BarChart = (props) => {
       const yRatio = maxY / numberOfHorizontalGuides
       const ratio = (index + 1) / numberOfHorizontalGuides
 
-      const yCoordinate = height - height * ratio + padding
+      const yCoordinate = height - height * ratio + padding + 20
 
       return (
         <Fragment key={index}>
@@ -74,7 +76,7 @@ export const BarChart = (props) => {
               fill: colors[2]
             }}
           >
-            {(index * yRatio + yRatio).toPrecision(2)} KW
+            {(index * yRatio + yRatio).toFixed(2)} kWh
           </text>
           <polyline
             key={index}
@@ -101,7 +103,7 @@ export const BarChart = (props) => {
         <text
           key={index}
           x={x}
-          y={y}
+          y={y + 28}
           style={{
             fill: '#ccc',
             fontSize: FONT_SIZE,
@@ -139,7 +141,7 @@ export const BarChart = (props) => {
           </a>
         ))}
       </div>
-      <svg viewBox={`0 0 ${width} ${height + 40}`}>
+      <svg viewBox={`0 0 ${width} ${height + 60}`}>
         <style>{`.small {color: 'red'} `}</style>
 
         <XAxis />
@@ -162,9 +164,9 @@ export const BarChart = (props) => {
                 <line
                   key={idxline}
                   x1={point[0] + idx * 14}
-                  y1={point[1] - (height - 3) < 0 ? point[1] + 5 : point[1] - 4}
+                  y1={point[1] + 25}
                   x2={point[0] + idx * 14}
-                  y2={height - 3}
+                  y2={height + 25}
                   stroke={colors[idx]}
                   strokeWidth='9.5'
                   strokeLinecap='round'

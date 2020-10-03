@@ -3,7 +3,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var React = require('react');
 var React__default = _interopDefault(React);
 
-var styles = {"test":"_3ybTi"};
+var styles = {"test":"_styles-module__test__3ybTi"};
 
 var Input = function Input() {
   return /*#__PURE__*/React__default.createElement("input", {
@@ -213,7 +213,9 @@ var BarChart = function BarChart(props) {
 
   var colors = ['#55BDC8', '#304e62', '#ABABAB'];
   var FONT_SIZE = 12;
-  var maxY = Math.max.apply(Math, (_ref = []).concat.apply(_ref, Object.values(data.data)));
+  var maxValue = Math.max.apply(Math, (_ref = []).concat.apply(_ref, Object.values(data.data)));
+  var zeros = Math.pow(10, maxValue.toFixed().toString().length - 1);
+  var maxY = Math.ceil(maxValue / zeros) * zeros;
 
   if (maxY < 1) {
     maxY = 1;
@@ -242,7 +244,7 @@ var BarChart = function BarChart(props) {
 
   var XAxis = function XAxis() {
     return /*#__PURE__*/React__default.createElement(Axis, {
-      points: padding + "," + (height + 5) + " " + width + "," + (height + 5)
+      points: padding + "," + (height + 36) + " " + width + "," + (height + 36)
     });
   };
 
@@ -253,7 +255,7 @@ var BarChart = function BarChart(props) {
     return new Array(numberOfHorizontalGuides).fill(0).map(function (_, index) {
       var yRatio = maxY / numberOfHorizontalGuides;
       var ratio = (index + 1) / numberOfHorizontalGuides;
-      var yCoordinate = height - height * ratio + padding;
+      var yCoordinate = height - height * ratio + padding + 20;
       return /*#__PURE__*/React__default.createElement(React.Fragment, {
         key: index
       }, /*#__PURE__*/React__default.createElement("text", {
@@ -265,7 +267,7 @@ var BarChart = function BarChart(props) {
           fontFamily: 'Nunito',
           fill: colors[2]
         }
-      }, (index * yRatio + yRatio).toPrecision(2), " KW"), /*#__PURE__*/React__default.createElement("polyline", {
+      }, (index * yRatio + yRatio).toFixed(2), " kWh"), /*#__PURE__*/React__default.createElement("polyline", {
         key: index,
         fill: "none",
         stroke: "#EDEDED",
@@ -284,7 +286,7 @@ var BarChart = function BarChart(props) {
       return /*#__PURE__*/React__default.createElement("text", {
         key: index,
         x: x,
-        y: y,
+        y: y + 28,
         style: {
           fill: '#ccc',
           fontSize: FONT_SIZE,
@@ -322,16 +324,16 @@ var BarChart = function BarChart(props) {
       }
     }, key);
   })), /*#__PURE__*/React__default.createElement("svg", {
-    viewBox: "0 0 " + width + " " + (height + 40)
+    viewBox: "0 0 " + width + " " + (height + 60)
   }, /*#__PURE__*/React__default.createElement("style", null, ".small {color: 'red'} "), /*#__PURE__*/React__default.createElement(XAxis, null), /*#__PURE__*/React__default.createElement(LabelsXAxis, null), /*#__PURE__*/React__default.createElement(HorizontalGuides, null), points.map(function (series, idx) {
     if (visible[Object.keys(data.data)[idx]]) {
       return series.map(function (point, idxline) {
         return /*#__PURE__*/React__default.createElement("line", {
           key: idxline,
           x1: point[0] + idx * 14,
-          y1: point[1] - (height - 3) < 0 ? point[1] + 5 : point[1] - 4,
+          y1: point[1] + 25,
           x2: point[0] + idx * 14,
-          y2: height - 3,
+          y2: height + 25,
           stroke: colors[idx],
           strokeWidth: "9.5",
           strokeLinecap: "round"
