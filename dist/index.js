@@ -137,6 +137,9 @@ var LineChart = function LineChart(props) {
         key: index,
         x: x,
         y: y,
+        dominantBaseline: "central",
+        textAnchor: "start",
+        transform: "rotate(45, " + x + ", " + y + ")",
         style: {
           fill: '#ccc',
           fontSize: FONT_SIZE,
@@ -174,7 +177,7 @@ var LineChart = function LineChart(props) {
       }
     }, labels[idx]);
   })), /*#__PURE__*/React__default.createElement("svg", {
-    viewBox: "0 0 " + width + " " + (height + 40)
+    viewBox: "0 0 " + width + " " + (height + 100)
   }, /*#__PURE__*/React__default.createElement("style", null, ".small {color: 'red'} "), /*#__PURE__*/React__default.createElement(XAxis, null), /*#__PURE__*/React__default.createElement(LabelsXAxis, null), /*#__PURE__*/React__default.createElement(HorizontalGuides, null), points.map(function (points, idx) {
     if (visible[idx]) {
       return /*#__PURE__*/React__default.createElement("polyline", {

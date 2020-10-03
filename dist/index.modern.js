@@ -95,6 +95,9 @@ const LineChart = props => {
         key: index,
         x: x,
         y: y,
+        dominantBaseline: "central",
+        textAnchor: "start",
+        transform: `rotate(45, ${x}, ${y})`,
         style: {
           fill: '#ccc',
           fontSize: FONT_SIZE,
@@ -128,7 +131,7 @@ const LineChart = props => {
     },
     onClick: e => handleVisible(idx)
   }, labels[idx]))), /*#__PURE__*/React.createElement("svg", {
-    viewBox: `0 0 ${width} ${height + 40}`
+    viewBox: `0 0 ${width} ${height + 100}`
   }, /*#__PURE__*/React.createElement("style", null, `.small {color: 'red'} `), /*#__PURE__*/React.createElement(XAxis, null), /*#__PURE__*/React.createElement(LabelsXAxis, null), /*#__PURE__*/React.createElement(HorizontalGuides, null), points.map((points, idx) => {
     if (visible[idx]) {
       return /*#__PURE__*/React.createElement("polyline", {

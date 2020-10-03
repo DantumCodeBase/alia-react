@@ -103,6 +103,9 @@ export const LineChart = (props) => {
           key={index}
           x={x}
           y={y}
+          dominantBaseline='central'
+          textAnchor='start'
+          transform={`rotate(45, ${x}, ${y})`}
           style={{
             fill: '#ccc',
             fontSize: FONT_SIZE,
@@ -140,7 +143,7 @@ export const LineChart = (props) => {
           </a>
         ))}
       </div>
-      <svg viewBox={`0 0 ${width} ${height + 40}`}>
+      <svg viewBox={`0 0 ${width} ${height + 100}`}>
         <style>{`.small {color: 'red'} `}</style>
 
         <XAxis />
