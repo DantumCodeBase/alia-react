@@ -3,7 +3,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var React = require('react');
 var React__default = _interopDefault(React);
 
-var styles = {"test":"_styles-module__test__3ybTi"};
+var styles = {"test":"_3ybTi"};
 
 var Input = function Input() {
   return /*#__PURE__*/React__default.createElement("input", {

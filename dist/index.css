@@ -1,6 +1,6 @@
 /* add css module styles here (optional) */
 
-._styles-module__test__3ybTi {
+._3ybTi {
   margin: 2em;
   padding: 0.5em;
   border: 2px solid #000;
@@ -8,7 +8,7 @@
   text-align: center;
 }
 
-._Input__d-input__ysVLy {
+._ysVLy {
   font-family: 'Nunito';
   color: white;
   font-weight: 500;
@@ -21,11 +21,11 @@
   min-width: 10rem;
   outline: none;
   transition: all 0.3s; }
-  ._Input__d-input__ysVLy:active, ._Input__d-input__ysVLy:hover, ._Input__d-input__ysVLy:focus {
+  ._ysVLy:active, ._ysVLy:hover, ._ysVLy:focus {
     color: white;
     background-color: #1eb8d3; }
 
-._Button__d-button__yRuhD {
+._yRuhD {
   overflow: hidden;
   position: relative;
   border: 2px solid #354f63;
@@ -39,7 +39,7 @@
   background-color: transparent;
   -webkit-transition: all 150ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
   outline: none; }
-  ._Button__d-button__yRuhD:before {
+  ._yRuhD:before {
     position: absolute;
     content: '';
     background: url(https://f.cl.ly/items/3H3A0D1N281a2T280F3o/heist.svg) no-repeat center center;
@@ -50,7 +50,7 @@
     z-index: -1;
     opacity: 0;
     -webkit-transition: all 250ms cubic-bezier(0.23, 1, 0.32, 1); }
-  ._Button__d-button__yRuhD:after {
+  ._yRuhD:after {
     content: '';
     position: absolute;
     background: #1eb8d3;
@@ -60,22 +60,22 @@
     top: 100%;
     z-index: -2;
     -webkit-transition: all 250ms cubic-bezier(0.23, 1, 0.32, 1); }
-  ._Button__d-button__yRuhD:hover:before {
+  ._yRuhD:hover:before {
     opacity: 0.8; }
-  ._Button__d-button__yRuhD:active:after {
+  ._yRuhD:active:after {
     opacity: 0; }
-  ._Button__d-button__yRuhD:hover:after {
+  ._yRuhD:hover:after {
     top: 0; }
-  ._Button__d-button__yRuhD:hover {
+  ._yRuhD:hover {
     color: white;
     border: 2px solid #1eb8d3;
     background-color: #1eb8d3; }
-  ._Button__d-button__yRuhD:active {
+  ._yRuhD:active {
     background-color: #6db827;
     border: 2px solid #6db827;
     transition: none; }
 
-._LineChart__phase__3fTOR {
+._3fTOR {
   background-color: black;
   padding: 20px;
   width: 200px;
