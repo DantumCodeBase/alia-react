@@ -25,18 +25,12 @@ export const LineChart = (props) => {
   const minX = Math.min(...data.map((d) => Math.min(...d.map((e) => e.x))))
 
   const maxValue = Math.max(...data.map((d) => Math.max(...d.map((e) => e.y)))) * 1.25;
-  console.log(maxValue)
   const maxZeros = 10 ** (maxValue.toFixed().toString().length - 1)
-  console.log(maxZeros)
   const maxY = (Math.ceil(maxValue / maxZeros) * maxZeros)
-  console.log(maxY)
 
   const minValue = Math.min(...data.map((d) => Math.min(...d.map((e) => e.y)))) * 1.25;
-  console.log(minValue)
   const minZeros = 10 ** (Math.abs(minValue).toFixed().toString().length - 1)
-  console.log(minZeros)
   const minY = (Math.floor(minValue / minZeros) * minZeros)
-  console.log(minY)
 
   const points = data.map((singlePlot) =>
     singlePlot
@@ -49,37 +43,42 @@ export const LineChart = (props) => {
       .join(' ')
   )
 
-  const Axis = ({ points }) => (
+  const Axis = ({ points, stroke='#EDEDED' }) => (
     <polyline
       fill='solid'
-      stroke='#EDEDED'
-      strokeWidth='2'
+      stroke={stroke}
+      strokeWidth='1'
       points={points}
       strokeLinecap='round'
     />
   )
 
-  const XAxis = () => (
-    <Axis points={`${padding},${height + 5} ${width},${height + 5}`} />
-  )
+  const XAxis = () => {
+    const zeroY = height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height
+
+    return (<Axis stroke='#a0a0a0' points={`${padding},${zeroY} ${width},${zeroY}`} />);
+
+  }
+
+
 
   const HorizontalGuides = () => {
     const startX = padding
     const endX = width
     const numberOfHorizontalGuides = 5
 
-    return new Array(numberOfHorizontalGuides).fill(0).map((_, index) => {
+    return new Array(numberOfHorizontalGuides -1).fill(0).map((_, index) => {
       const yRatio = Math.abs(maxY-minY) / numberOfHorizontalGuides
       const ratio = (index + 1) / numberOfHorizontalGuides
-
+      const displayNumber = index * yRatio + yRatio + minY;
       const yCoordinate = height - height * ratio + padding
-      console.log(yRatio, maxY, minY)
+
       return (
         <Fragment key={index}>
           <text
             key={`${index}-text`}
             x={startX}
-            y={yCoordinate - 5}
+            y={ displayNumber>=0 ? (yCoordinate - 5) : (yCoordinate + 15) }
             style={{
               fontSize: 14,
               fontFamily: 'Nunito',
@@ -92,7 +91,7 @@ export const LineChart = (props) => {
           <polyline
             key={index}
             fill='none'
-            stroke='#ccc'
+            stroke='#e0e0e0'
             strokeDasharray='5 5'
             strokeLinecap='round'
             strokeWidth='1'
@@ -114,12 +113,12 @@ export const LineChart = (props) => {
         <text
           key={index}
           x={x}
-          y={y}
+          y={y - 20}
           dominantBaseline='central'
           textAnchor='start'
           transform={`rotate(45, ${x}, ${y})`}
           style={{
-            fill: '#ccc',
+            fill: '#a0a0a0',
             fontSize: FONT_SIZE,
             fontWeight: 'bold',
             fontFamily: 'Nunito'
@@ -144,7 +143,7 @@ export const LineChart = (props) => {
 
   return (
     <>
-      <div className='phase' style={{ float: 'right', marginBottom: '15px' }}>
+      <div className='phase' style={{ float: 'right', marginBottom: '15px'}}>
         {points.map((points, idx) => (
           <a
             key={idx}

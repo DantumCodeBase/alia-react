@@ -69,21 +69,15 @@ var LineChart = function LineChart(props) {
       return e.y;
     }));
   })) * 1.25;
-  console.log(maxValue);
   var maxZeros = Math.pow(10, maxValue.toFixed().toString().length - 1);
-  console.log(maxZeros);
   var maxY = Math.ceil(maxValue / maxZeros) * maxZeros;
-  console.log(maxY);
   var minValue = Math.min.apply(Math, data.map(function (d) {
     return Math.min.apply(Math, d.map(function (e) {
       return e.y;
     }));
   })) * 1.25;
-  console.log(minValue);
   var minZeros = Math.pow(10, Math.abs(minValue).toFixed().toString().length - 1);
-  console.log(minZeros);
   var minY = Math.floor(minValue / minZeros) * minZeros;
-  console.log(minY);
   var points = data.map(function (singlePlot) {
     return singlePlot.map(function (element) {
       var x = (element.x - minX) / (maxX - minX) * width + padding;
@@ -93,19 +87,23 @@ var LineChart = function LineChart(props) {
   });
 
   var Axis = function Axis(_ref) {
-    var points = _ref.points;
+    var points = _ref.points,
+        _ref$stroke = _ref.stroke,
+        stroke = _ref$stroke === void 0 ? '#EDEDED' : _ref$stroke;
     return /*#__PURE__*/React.createElement("polyline", {
       fill: "solid",
-      stroke: "#EDEDED",
-      strokeWidth: "2",
+      stroke: stroke,
+      strokeWidth: "1",
       points: points,
       strokeLinecap: "round"
     });
   };
 
   var XAxis = function XAxis() {
+    var zeroY = height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height;
     return /*#__PURE__*/React.createElement(Axis, {
-      points: padding + "," + (height + 5) + " " + width + "," + (height + 5)
+      stroke: "#a0a0a0",
+      points: padding + "," + zeroY + " " + width + "," + zeroY
     });
   };
 
@@ -113,17 +111,17 @@ var LineChart = function LineChart(props) {
     var startX = padding;
     var endX = width;
     var numberOfHorizontalGuides = 5;
-    return new Array(numberOfHorizontalGuides).fill(0).map(function (_, index) {
+    return new Array(numberOfHorizontalGuides - 1).fill(0).map(function (_, index) {
       var yRatio = Math.abs(maxY - minY) / numberOfHorizontalGuides;
       var ratio = (index + 1) / numberOfHorizontalGuides;
+      var displayNumber = index * yRatio + yRatio + minY;
       var yCoordinate = height - height * ratio + padding;
-      console.log(yRatio, maxY, minY);
       return /*#__PURE__*/React.createElement(Fragment, {
         key: index
       }, /*#__PURE__*/React.createElement("text", {
         key: index + "-text",
         x: startX,
-        y: yCoordinate - 5,
+        y: displayNumber >= 0 ? yCoordinate - 5 : yCoordinate + 15,
         style: {
           fontSize: 14,
           fontFamily: 'Nunito',
@@ -133,7 +131,7 @@ var LineChart = function LineChart(props) {
       }, (index * yRatio + yRatio + minY).toPrecision(4), " KW"), /*#__PURE__*/React.createElement("polyline", {
         key: index,
         fill: "none",
-        stroke: "#ccc",
+        stroke: "#e0e0e0",
         strokeDasharray: "5 5",
         strokeLinecap: "round",
         strokeWidth: "1",
@@ -149,12 +147,12 @@ var LineChart = function LineChart(props) {
       return /*#__PURE__*/React.createElement("text", {
         key: index,
         x: x,
-        y: y,
+        y: y - 20,
         dominantBaseline: "central",
         textAnchor: "start",
         transform: "rotate(45, " + x + ", " + y + ")",
         style: {
-          fill: '#ccc',
+          fill: '#a0a0a0',
           fontSize: FONT_SIZE,
           fontWeight: 'bold',
           fontFamily: 'Nunito'
