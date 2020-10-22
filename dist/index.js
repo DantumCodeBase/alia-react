@@ -72,6 +72,11 @@ var LineChart = function LineChart(props) {
       return e.y;
     }));
   })) * 1.25 || 10;
+  var minY = Math.min.apply(Math, data.map(function (d) {
+    return Math.min.apply(Math, d.map(function (e) {
+      return e.y;
+    }));
+  })) * 1.25 || 10;
   var points = data.map(function (singlePlot) {
     return singlePlot.map(function (element) {
       var x = (element.x - minX) / (maxX - minX) * width + padding;

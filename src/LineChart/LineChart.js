@@ -25,6 +25,7 @@ export const LineChart = (props) => {
   const minX = Math.min(...data.map((d) => Math.min(...d.map((e) => e.x))))
 
   const maxY = Math.max(...data.map((d) => Math.max(...d.map((e) => e.y)))) * 1.25 || 10;
+  const minY = Math.min(...data.map((d) => Math.min(...d.map((e) => e.y)))) * 1.25 || 10;
 
   const points = data.map((singlePlot) =>
     singlePlot
