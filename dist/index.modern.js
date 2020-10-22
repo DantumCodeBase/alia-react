@@ -64,16 +64,25 @@ var LineChart = function LineChart(props) {
       return e.x;
     }));
   }));
-  var maxY = Math.max.apply(Math, data.map(function (d) {
+  var maxValue = Math.max.apply(Math, data.map(function (d) {
     return Math.max.apply(Math, d.map(function (e) {
       return e.y;
     }));
-  })) * 1.25 || 10;
-  var minY = Math.min.apply(Math, data.map(function (d) {
+  })) * 1.25;
+  console.log(maxValue);
+  var maxZeros = Math.pow(10, maxValue.toFixed().toString().length - 1);
+  console.log(maxZeros);
+  var maxY = Math.ceil(maxValue / maxZeros) * maxZeros;
+  console.log(maxY);
+  var minValue = Math.min.apply(Math, data.map(function (d) {
     return Math.min.apply(Math, d.map(function (e) {
       return e.y;
     }));
   })) * 1.25;
+  console.log(minValue);
+  var minZeros = Math.pow(10, Math.abs(minValue).toFixed().toString().length - 1);
+  console.log(minZeros);
+  var minY = Math.floor(minValue / minZeros) * minZeros;
   console.log(minY);
   var points = data.map(function (singlePlot) {
     return singlePlot.map(function (element) {
@@ -108,6 +117,7 @@ var LineChart = function LineChart(props) {
       var yRatio = Math.abs(maxY - minY) / numberOfHorizontalGuides;
       var ratio = (index + 1) / numberOfHorizontalGuides;
       var yCoordinate = height - height * ratio + padding;
+      console.log(yRatio, maxY, minY);
       return /*#__PURE__*/React.createElement(Fragment, {
         key: index
       }, /*#__PURE__*/React.createElement("text", {

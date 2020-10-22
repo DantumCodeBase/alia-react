@@ -24,8 +24,18 @@ export const LineChart = (props) => {
   const maxX = Math.max(...data.map((d) => Math.max(...d.map((e) => e.x))))
   const minX = Math.min(...data.map((d) => Math.min(...d.map((e) => e.x))))
 
-  const maxY = Math.max(...data.map((d) => Math.max(...d.map((e) => e.y)))) * 1.25 || 10;
-  const minY = Math.min(...data.map((d) => Math.min(...d.map((e) => e.y)))) * 1.25;
+  const maxValue = Math.max(...data.map((d) => Math.max(...d.map((e) => e.y)))) * 1.25;
+  console.log(maxValue)
+  const maxZeros = 10 ** (maxValue.toFixed().toString().length - 1)
+  console.log(maxZeros)
+  const maxY = (Math.ceil(maxValue / maxZeros) * maxZeros)
+  console.log(maxY)
+
+  const minValue = Math.min(...data.map((d) => Math.min(...d.map((e) => e.y)))) * 1.25;
+  console.log(minValue)
+  const minZeros = 10 ** (Math.abs(minValue).toFixed().toString().length - 1)
+  console.log(minZeros)
+  const minY = (Math.floor(minValue / minZeros) * minZeros)
   console.log(minY)
 
   const points = data.map((singlePlot) =>
@@ -63,7 +73,7 @@ export const LineChart = (props) => {
       const ratio = (index + 1) / numberOfHorizontalGuides
 
       const yCoordinate = height - height * ratio + padding
-
+      console.log(yRatio, maxY, minY)
       return (
         <Fragment key={index}>
           <text
