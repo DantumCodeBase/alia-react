@@ -35,10 +35,11 @@ const LineChart = props => {
   const maxX = Math.max(...data.map(d => Math.max(...d.map(e => e.x))));
   const minX = Math.min(...data.map(d => Math.min(...d.map(e => e.x))));
   const maxY = Math.max(...data.map(d => Math.max(...d.map(e => e.y)))) * 1.25 || 10;
-  const minY = Math.min(...data.map(d => Math.min(...d.map(e => e.y)))) * 1.25 || 10;
+  const minY = Math.min(...data.map(d => Math.min(...d.map(e => e.y)))) * 1.25;
+  console.log(minY);
   const points = data.map(singlePlot => singlePlot.map(element => {
     const x = (element.x - minX) / (maxX - minX) * width + padding;
-    const y = height - element.y / maxY * height + padding;
+    const y = height - element.y / Math.abs(maxY - minY) * height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height;
     return `${x},${y}`;
   }).join(' '));
 
@@ -61,7 +62,7 @@ const LineChart = props => {
     const endX = width;
     const numberOfHorizontalGuides = 5;
     return new Array(numberOfHorizontalGuides).fill(0).map((_, index) => {
-      const yRatio = maxY / numberOfHorizontalGuides;
+      const yRatio = Math.abs(maxY - minY) / numberOfHorizontalGuides;
       const ratio = (index + 1) / numberOfHorizontalGuides;
       const yCoordinate = height - height * ratio + padding;
       return /*#__PURE__*/React.createElement(Fragment, {
@@ -71,12 +72,12 @@ const LineChart = props => {
         x: startX,
         y: yCoordinate - 5,
         style: {
-          fontSize: 10,
+          fontSize: 14,
           fontFamily: 'Nunito',
           fill: colors[2],
           fontWeight: 'bold'
         }
-      }, (index * yRatio + yRatio).toPrecision(2), " KW"), /*#__PURE__*/React.createElement("polyline", {
+      }, (index * yRatio + yRatio + minY).toPrecision(4), " KW"), /*#__PURE__*/React.createElement("polyline", {
         key: index,
         fill: "none",
         stroke: "#ccc",
@@ -89,7 +90,7 @@ const LineChart = props => {
   };
 
   const LabelsXAxis = () => {
-    const y = height - padding + FONT_SIZE * 2;
+    const y = height - padding + FONT_SIZE * 2 - Math.abs(minY) / Math.abs(maxY - minY) * height;
     return data[0].map((element, index) => {
       const x = (element.x - minX) / (maxX - minX) * width + 10 - FONT_SIZE / 2;
       return /*#__PURE__*/React.createElement("text", {

@@ -12,12 +12,12 @@ import 'alia-react/dist/index.css'
 const multidata = [
   [
     { label: '3:24:01', x: 0, y: 0 },
-    { label: '3:24:02', x: 1, y: -1 },
-    { label: '3:24:03', x: 2, y: -2 },
-    { label: '3:24:04', x: 3, y: -3 },
-    { label: '3:24:05', x: 4, y: -4 },
-    { label: '3:24:06', x: 5, y: -5 },
-    { label: '3:24:07', x: 6, y: -6 }
+    { label: '3:24:02', x: 1, y: 0 },
+    { label: '3:24:03', x: 2, y: 0 },
+    { label: '3:24:04', x: 3, y: -17.0 },
+    { label: '3:24:05', x: 4, y: 0 },
+    { label: '3:24:06', x: 5, y: 0 },
+    { label: '3:24:07', x: 6, y: 0 }
   ],
   [
     { label: '3:24:02', x: 0, y: 0 },

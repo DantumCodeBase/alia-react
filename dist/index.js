@@ -76,11 +76,12 @@ var LineChart = function LineChart(props) {
     return Math.min.apply(Math, d.map(function (e) {
       return e.y;
     }));
-  })) * 1.25 || 10;
+  })) * 1.25;
+  console.log(minY);
   var points = data.map(function (singlePlot) {
     return singlePlot.map(function (element) {
       var x = (element.x - minX) / (maxX - minX) * width + padding;
-      var y = height - element.y / maxY * height + padding;
+      var y = height - element.y / Math.abs(maxY - minY) * height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height;
       return x + "," + y;
     }).join(' ');
   });
@@ -107,7 +108,7 @@ var LineChart = function LineChart(props) {
     var endX = width;
     var numberOfHorizontalGuides = 5;
     return new Array(numberOfHorizontalGuides).fill(0).map(function (_, index) {
-      var yRatio = maxY / numberOfHorizontalGuides;
+      var yRatio = Math.abs(maxY - minY) / numberOfHorizontalGuides;
       var ratio = (index + 1) / numberOfHorizontalGuides;
       var yCoordinate = height - height * ratio + padding;
       return /*#__PURE__*/React__default.createElement(React.Fragment, {
@@ -117,12 +118,12 @@ var LineChart = function LineChart(props) {
         x: startX,
         y: yCoordinate - 5,
         style: {
-          fontSize: 10,
+          fontSize: 14,
           fontFamily: 'Nunito',
           fill: colors[2],
           fontWeight: 'bold'
         }
-      }, (index * yRatio + yRatio).toPrecision(2), " KW"), /*#__PURE__*/React__default.createElement("polyline", {
+      }, (index * yRatio + yRatio + minY).toPrecision(4), " KW"), /*#__PURE__*/React__default.createElement("polyline", {
         key: index,
         fill: "none",
         stroke: "#ccc",
@@ -135,7 +136,7 @@ var LineChart = function LineChart(props) {
   };
 
   var LabelsXAxis = function LabelsXAxis() {
-    var y = height - padding + FONT_SIZE * 2;
+    var y = height - padding + FONT_SIZE * 2 - Math.abs(minY) / Math.abs(maxY - minY) * height;
     return data[0].map(function (element, index) {
       var x = (element.x - minX) / (maxX - minX) * width + 10 - FONT_SIZE / 2;
       return /*#__PURE__*/React__default.createElement("text", {
