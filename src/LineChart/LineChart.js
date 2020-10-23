@@ -1,7 +1,9 @@
 import React, { Fragment, useState } from 'react'
+import Tooltip from '../Tooltip'
 import './LineChart.scss'
 
 export const LineChart = (props) => {
+  const [tooltipVisible, setTooltipVisible] = useState(null)
   const { height, width, padding, data, labels } = props
 
   if (!data) return null
@@ -26,7 +28,7 @@ export const LineChart = (props) => {
 
   const maxValue = Math.max(...data.map((d) => Math.max(...d.map((e) => e.y)))) * 1.25;
   const maxZeros = 10 ** (maxValue.toFixed().toString().length - 1)
-  const maxY = (Math.ceil(maxValue / maxZeros) * maxZeros)
+  const maxY = (Math.ceil(maxValue / maxZeros) * maxZeros) || 5
 
   const minValue = Math.min(...data.map((d) => Math.min(...d.map((e) => e.y)))) * 1.25;
   const minZeros = 10 ** (Math.abs(minValue).toFixed().toString().length - 1)
@@ -37,12 +39,25 @@ export const LineChart = (props) => {
       .map((element) => {
         // Calculate coordinates
         const x = ((element.x - minX) / (maxX - minX)) * width + padding
-        const y = height - (element.y / Math.abs(maxY - minY)) * height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height
+        const y = height - (element.y / Math.abs(maxY - minY)) * height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height 
         return `${x},${y}`
       })
       .join(' ')
   )
 
+  // data.map((singlePlot) => console.log("Single ", singlePlot))
+
+  const pointsCoords = data.map((singlePlot, idx) =>
+    singlePlot
+      .map((element) => {
+        // Calculate coordinates
+        const x = ((element.x - minX) / (maxX - minX)) * width + padding
+        const y = height - (element.y / Math.abs(maxY - minY)) * height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height 
+        
+        return [x, y, element.y, idx, element.label]
+      })
+  )
+  
   const Axis = ({ points, stroke='#EDEDED' }) => (
     <polyline
       fill='solid'
@@ -54,7 +69,7 @@ export const LineChart = (props) => {
   )
 
   const XAxis = () => {
-    const zeroY = height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height
+    const zeroY = height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height || 200;
 
     return (<Axis stroke='#a0a0a0' points={`${padding},${zeroY} ${width},${zeroY}`} />);
 
@@ -103,7 +118,8 @@ export const LineChart = (props) => {
   }
 
   const LabelsXAxis = () => {
-    const y = height - padding + FONT_SIZE * 2 - Math.abs(minY)/Math.abs(maxY-minY)*height
+    const y = height - padding + FONT_SIZE * 2 - Math.abs(minY)/Math.abs(maxY-minY)*height || 224;
+
 
     return data[0].map((element, index) => {
       const x =
@@ -141,6 +157,56 @@ export const LineChart = (props) => {
     })
   }
 
+
+  const Mark = ({coord, idx, onMouseOver, onMouseLeave}) => {
+
+    return (
+     <g key={`dot-${idx}`} pointerEvents='all' onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
+        <circle cx={coord[0]} cy={coord[1]} r='5' fill='#a0a0a0'/>
+      </g>
+      )
+  }
+
+
+  const Tooltips = ({x=500,y=70, label="545.245 MW", sublabel="3:24:02"}) => {
+
+    const rectPos = [x-35, y - 40]
+
+    const height = 25
+    const width = 50
+
+    return (<>
+      <rect x={rectPos[0]} y={rectPos[1]} width={width + label.length*4} height={height} rx="15" fill="#c0c0c0">
+      </rect>
+      <text
+        x={rectPos[0] + (width - label.length)/3}
+        y={rectPos[1] + height/2}
+        style={{
+          fill: 'white',
+          fontSize: '0.7rem',
+          fontWeight: 'bold',
+          fontFamily: 'Nunito'
+        }}>
+          {label}
+      </text>
+      <text
+        x={rectPos[0] + (width - label.length)/3}
+        y={rectPos[1] + height/2 + 10}
+        style={{
+          fill: 'white',
+          fontSize: '0.6rem',
+          fontWeight: 'bold',
+          fontFamily: 'Nunito'
+        }}>
+          {sublabel}
+      </text>
+
+      </>
+    )
+  }
+
+  
+
   return (
     <>
       <div className='phase' style={{ float: 'right', marginBottom: '15px'}}>
@@ -159,6 +225,7 @@ export const LineChart = (props) => {
 
         <XAxis />
         <LabelsXAxis />
+        
         {/* <YAxis /> */}
         <HorizontalGuides />
         {points.map((points, idx) => {
@@ -176,7 +243,41 @@ export const LineChart = (props) => {
             )
           }
         })}
+        {pointsCoords.map((coords, idx) => {
+          if (visible[idx]) {
+            return coords.map((coord, idx)=> {
+
+              return <>
+                <Mark 
+                  coord={coord} 
+                  idx={idx} 
+                  onMouseOver={()=> setTooltipVisible(`${coord[0]}-${coord[3]}`)}
+                  onMouseLeave={()=>{
+                      console.log("LEAVE")
+                    setTooltipVisible(null)}}
+                ></Mark>
+              </>
+            }
+            )
+          }
+
+        })}     
+        {pointsCoords.map((coords, idx) => {
+            if (visible[idx]) {
+              return coords.map((coord, idx)=> {
+                const quantity = coord[2].toFixed(2)
+                return <>
+                  { tooltipVisible == `${coord[0]}-${coord[3]}` &&  
+                  <Tooltips key={idx} x={coord[0]} y={coord[1]} label={`${quantity} MW`} sublabel={coord[4]}>
+                  </Tooltips>}
+                </>
+              }
+              )
+            }
+          })}   
       </svg>
+
+      
     </>
   )
 }

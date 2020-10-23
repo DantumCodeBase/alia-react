@@ -37,6 +37,10 @@ function _extends() {
 }
 
 var LineChart = function LineChart(props) {
+  var _useState = useState(null),
+      tooltipVisible = _useState[0],
+      setTooltipVisible = _useState[1];
+
   var height = props.height,
       width = props.width,
       padding = props.padding,
@@ -48,9 +52,9 @@ var LineChart = function LineChart(props) {
     return initialState2[idx] = true;
   });
 
-  var _useState = useState(initialState2),
-      visible = _useState[0],
-      setVisible = _useState[1];
+  var _useState2 = useState(initialState2),
+      visible = _useState2[0],
+      setVisible = _useState2[1];
 
   var colors = ['#304e62', '#55bcc8', '#ABABAB', '#304e62', '#55bcc8', '#ABABAB'];
   var FONT_SIZE = 12;
@@ -70,7 +74,7 @@ var LineChart = function LineChart(props) {
     }));
   })) * 1.25;
   var maxZeros = Math.pow(10, maxValue.toFixed().toString().length - 1);
-  var maxY = Math.ceil(maxValue / maxZeros) * maxZeros;
+  var maxY = Math.ceil(maxValue / maxZeros) * maxZeros || 5;
   var minValue = Math.min.apply(Math, data.map(function (d) {
     return Math.min.apply(Math, d.map(function (e) {
       return e.y;
@@ -84,6 +88,13 @@ var LineChart = function LineChart(props) {
       var y = height - element.y / Math.abs(maxY - minY) * height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height;
       return x + "," + y;
     }).join(' ');
+  });
+  var pointsCoords = data.map(function (singlePlot, idx) {
+    return singlePlot.map(function (element) {
+      var x = (element.x - minX) / (maxX - minX) * width + padding;
+      var y = height - element.y / Math.abs(maxY - minY) * height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height;
+      return [x, y, element.y, idx, element.label];
+    });
   });
 
   var Axis = function Axis(_ref) {
@@ -100,7 +111,7 @@ var LineChart = function LineChart(props) {
   };
 
   var XAxis = function XAxis() {
-    var zeroY = height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height;
+    var zeroY = height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height || 200;
     return /*#__PURE__*/React.createElement(Axis, {
       stroke: "#a0a0a0",
       points: padding + "," + zeroY + " " + width + "," + zeroY
@@ -141,7 +152,7 @@ var LineChart = function LineChart(props) {
   };
 
   var LabelsXAxis = function LabelsXAxis() {
-    var y = height - padding + FONT_SIZE * 2 - Math.abs(minY) / Math.abs(maxY - minY) * height;
+    var y = height - padding + FONT_SIZE * 2 - Math.abs(minY) / Math.abs(maxY - minY) * height || 224;
     return data[0].map(function (element, index) {
       var x = (element.x - minX) / (maxX - minX) * width + 10 - FONT_SIZE / 2;
       return /*#__PURE__*/React.createElement("text", {
@@ -168,6 +179,64 @@ var LineChart = function LineChart(props) {
       newState[idx] = !newState[idx];
       return newState;
     });
+  };
+
+  var Mark = function Mark(_ref2) {
+    var coord = _ref2.coord,
+        idx = _ref2.idx,
+        onMouseOver = _ref2.onMouseOver,
+        onMouseLeave = _ref2.onMouseLeave;
+    return /*#__PURE__*/React.createElement("g", {
+      key: "dot-" + idx,
+      pointerEvents: "all",
+      onMouseOver: onMouseOver,
+      onMouseLeave: onMouseLeave
+    }, /*#__PURE__*/React.createElement("circle", {
+      cx: coord[0],
+      cy: coord[1],
+      r: "5",
+      fill: "#a0a0a0"
+    }));
+  };
+
+  var Tooltips = function Tooltips(_ref3) {
+    var _ref3$x = _ref3.x,
+        x = _ref3$x === void 0 ? 500 : _ref3$x,
+        _ref3$y = _ref3.y,
+        y = _ref3$y === void 0 ? 70 : _ref3$y,
+        _ref3$label = _ref3.label,
+        label = _ref3$label === void 0 ? "545.245 MW" : _ref3$label,
+        _ref3$sublabel = _ref3.sublabel,
+        sublabel = _ref3$sublabel === void 0 ? "3:24:02" : _ref3$sublabel;
+    var rectPos = [x - 35, y - 40];
+    var height = 25;
+    var width = 50;
+    return /*#__PURE__*/React.createElement(Fragment, null, /*#__PURE__*/React.createElement("rect", {
+      x: rectPos[0],
+      y: rectPos[1],
+      width: width + label.length * 4,
+      height: height,
+      rx: "15",
+      fill: "#c0c0c0"
+    }), /*#__PURE__*/React.createElement("text", {
+      x: rectPos[0] + (width - label.length) / 3,
+      y: rectPos[1] + height / 2,
+      style: {
+        fill: 'white',
+        fontSize: '0.7rem',
+        fontWeight: 'bold',
+        fontFamily: 'Nunito'
+      }
+    }, label), /*#__PURE__*/React.createElement("text", {
+      x: rectPos[0] + (width - label.length) / 3,
+      y: rectPos[1] + height / 2 + 10,
+      style: {
+        fill: 'white',
+        fontSize: '0.6rem',
+        fontWeight: 'bold',
+        fontFamily: 'Nunito'
+      }
+    }, sublabel));
   };
 
   return /*#__PURE__*/React.createElement(Fragment, null, /*#__PURE__*/React.createElement("div", {
@@ -199,6 +268,35 @@ var LineChart = function LineChart(props) {
         strokeLinecap: "round",
         strokeDasharray: "10 5",
         points: points
+      });
+    }
+  }), pointsCoords.map(function (coords, idx) {
+    if (visible[idx]) {
+      return coords.map(function (coord, idx) {
+        return /*#__PURE__*/React.createElement(Fragment, null, /*#__PURE__*/React.createElement(Mark, {
+          coord: coord,
+          idx: idx,
+          onMouseOver: function onMouseOver() {
+            return setTooltipVisible(coord[0] + "-" + coord[3]);
+          },
+          onMouseLeave: function onMouseLeave() {
+            console.log("LEAVE");
+            setTooltipVisible(null);
+          }
+        }));
+      });
+    }
+  }), pointsCoords.map(function (coords, idx) {
+    if (visible[idx]) {
+      return coords.map(function (coord, idx) {
+        var quantity = coord[2].toFixed(2);
+        return /*#__PURE__*/React.createElement(Fragment, null, tooltipVisible == coord[0] + "-" + coord[3] && /*#__PURE__*/React.createElement(Tooltips, {
+          key: idx,
+          x: coord[0],
+          y: coord[1],
+          label: quantity + " MW",
+          sublabel: coord[4]
+        }));
       });
     }
   })));
