@@ -286,7 +286,6 @@ var LineChart = function LineChart(props) {
             return setTooltipVisible(coord[0] + "-" + coord[3]);
           },
           onMouseLeave: function onMouseLeave() {
-            console.log("LEAVE");
             setTooltipVisible(null);
           }
         }));

@@ -45,7 +45,6 @@ export const LineChart = (props) => {
       .join(' ')
   )
 
-  // data.map((singlePlot) => console.log("Single ", singlePlot))
 
   const pointsCoords = data.map((singlePlot, idx) =>
     singlePlot
@@ -254,7 +253,6 @@ export const LineChart = (props) => {
                   color={colors[idxParent]}
                   onMouseOver={()=> setTooltipVisible(`${coord[0]}-${coord[3]}`)}
                   onMouseLeave={()=>{
-                      console.log("LEAVE")
                     setTooltipVisible(null)}}
                 ></Mark>
               </>
