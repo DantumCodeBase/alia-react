@@ -276,6 +276,7 @@ var LineChart = function LineChart(props) {
     if (visible[idxParent]) {
       return coords.map(function (coord, idx) {
         return /*#__PURE__*/React.createElement(Fragment, null, /*#__PURE__*/React.createElement(Mark, {
+          key: idx,
           coord: coord,
           idx: idx,
           color: colors[idxParent],
