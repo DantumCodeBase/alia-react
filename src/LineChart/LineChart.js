@@ -248,6 +248,7 @@ export const LineChart = (props) => {
 
               return <>
                 <Mark 
+                  key={idx}
                   coord={coord} 
                   idx={idx} 
                   color={colors[idxParent]}
