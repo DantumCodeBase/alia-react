@@ -106,7 +106,7 @@ export const LineChart = (props) => {
             key={index}
             fill='none'
             stroke='#e0e0e0'
-            strokeDasharray='5 5'
+            strokeDasharray='1 5'
             strokeLinecap='round'
             strokeWidth='1'
             points={`${startX},${yCoordinate} ${endX},${yCoordinate}`}
@@ -236,7 +236,7 @@ export const LineChart = (props) => {
                 stroke={colors[idx]}
                 strokeWidth='3px'
                 strokeLinecap='round'
-                strokeDasharray='10 5'
+                strokeDasharray='5 5'
                 points={points}
               />
             )
