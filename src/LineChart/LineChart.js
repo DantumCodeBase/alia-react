@@ -158,11 +158,11 @@ export const LineChart = (props) => {
   }
 
 
-  const Mark = ({coord, idx, onMouseOver, onMouseLeave}) => {
+  const Mark = ({coord, idx, onMouseOver, onMouseLeave, color="red"}) => {
 
     return (
      <g key={`dot-${idx}`} pointerEvents='all' onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
-        <circle cx={coord[0]} cy={coord[1]} r='5' fill='#a0a0a0'/>
+        <circle cx={coord[0]} cy={coord[1]} r='3' fill={color}/>
       </g>
       )
   }
@@ -243,14 +243,15 @@ export const LineChart = (props) => {
             )
           }
         })}
-        {pointsCoords.map((coords, idx) => {
-          if (visible[idx]) {
+        {pointsCoords.map((coords, idxParent) => {
+          if (visible[idxParent]) {
             return coords.map((coord, idx)=> {
 
               return <>
                 <Mark 
                   coord={coord} 
                   idx={idx} 
+                  color={colors[idxParent]}
                   onMouseOver={()=> setTooltipVisible(`${coord[0]}-${coord[3]}`)}
                   onMouseLeave={()=>{
                       console.log("LEAVE")

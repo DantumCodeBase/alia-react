@@ -188,7 +188,9 @@ var LineChart = function LineChart(props) {
     var coord = _ref2.coord,
         idx = _ref2.idx,
         onMouseOver = _ref2.onMouseOver,
-        onMouseLeave = _ref2.onMouseLeave;
+        onMouseLeave = _ref2.onMouseLeave,
+        _ref2$color = _ref2.color,
+        color = _ref2$color === void 0 ? "red" : _ref2$color;
     return /*#__PURE__*/React__default.createElement("g", {
       key: "dot-" + idx,
       pointerEvents: "all",
@@ -197,8 +199,8 @@ var LineChart = function LineChart(props) {
     }, /*#__PURE__*/React__default.createElement("circle", {
       cx: coord[0],
       cy: coord[1],
-      r: "5",
-      fill: "#a0a0a0"
+      r: "3",
+      fill: color
     }));
   };
 
@@ -273,12 +275,13 @@ var LineChart = function LineChart(props) {
         points: points
       });
     }
-  }), pointsCoords.map(function (coords, idx) {
-    if (visible[idx]) {
+  }), pointsCoords.map(function (coords, idxParent) {
+    if (visible[idxParent]) {
       return coords.map(function (coord, idx) {
         return /*#__PURE__*/React__default.createElement(React.Fragment, null, /*#__PURE__*/React__default.createElement(Mark, {
           coord: coord,
           idx: idx,
+          color: colors[idxParent],
           onMouseOver: function onMouseOver() {
             return setTooltipVisible(coord[0] + "-" + coord[3]);
           },
