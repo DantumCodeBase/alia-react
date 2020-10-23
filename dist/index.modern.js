@@ -297,7 +297,7 @@ var LineChart = function LineChart(props) {
           key: idx,
           x: coord[0],
           y: coord[1],
-          label: quantity + " MW",
+          label: quantity + " kW",
           sublabel: coord[4]
         }));
       });

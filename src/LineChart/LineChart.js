@@ -268,7 +268,7 @@ export const LineChart = (props) => {
                 const quantity = coord[2].toFixed(2)
                 return <>
                   { tooltipVisible == `${coord[0]}-${coord[3]}` &&  
-                  <Tooltips key={idx} x={coord[0]} y={coord[1]} label={`${quantity} MW`} sublabel={coord[4]}>
+                  <Tooltips key={idx} x={coord[0]} y={coord[1]} label={`${quantity} kW`} sublabel={coord[4]}>
                   </Tooltips>}
                 </>
               }
