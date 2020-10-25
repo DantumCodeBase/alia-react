@@ -32,7 +32,14 @@ export const LineChart = (props) => {
 
   const minValue = Math.min(...data.map((d) => Math.min(...d.map((e) => e.y)))) * 1.25;
   const minZeros = 10 ** (Math.abs(minValue).toFixed().toString().length - 1)
-  const minY = (Math.floor(minValue / minZeros) * minZeros)
+  let minY = (Math.floor(minValue / minZeros) * minZeros)
+
+  if (minY > 0){
+    minY = 0
+  }
+  
+  console.log("minimum", minY)
+  console.log("max", maxY)
 
   const points = data.map((singlePlot) =>
     singlePlot
@@ -69,6 +76,7 @@ export const LineChart = (props) => {
 
   const XAxis = () => {
     const zeroY = height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height || 200;
+    console.log(zeroY)
 
     return (<Axis stroke='#a0a0a0' points={`${padding},${zeroY} ${width},${zeroY}`} />);
 

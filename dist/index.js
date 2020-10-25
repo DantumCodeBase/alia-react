@@ -85,6 +85,13 @@ var LineChart = function LineChart(props) {
   })) * 1.25;
   var minZeros = Math.pow(10, Math.abs(minValue).toFixed().toString().length - 1);
   var minY = Math.floor(minValue / minZeros) * minZeros;
+
+  if (minY > 0) {
+    minY = 0;
+  }
+
+  console.log("minimum", minY);
+  console.log("max", maxY);
   var points = data.map(function (singlePlot) {
     return singlePlot.map(function (element) {
       var x = (element.x - minX) / (maxX - minX) * width + padding;
@@ -115,6 +122,7 @@ var LineChart = function LineChart(props) {
 
   var XAxis = function XAxis() {
     var zeroY = height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height || 200;
+    console.log(zeroY);
     return /*#__PURE__*/React__default.createElement(Axis, {
       stroke: "#a0a0a0",
       points: padding + "," + zeroY + " " + width + "," + zeroY
