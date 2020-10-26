@@ -39,16 +39,61 @@ function _extends() {
   return _extends.apply(this, arguments);
 }
 
-var LineChart = function LineChart(props) {
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+  var it;
+
+  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+      if (it) o = it;
+      var i = 0;
+      return function () {
+        if (i >= o.length) return {
+          done: true
+        };
+        return {
+          done: false,
+          value: o[i++]
+        };
+      };
+    }
+
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  it = o[Symbol.iterator]();
+  return it.next.bind(it);
+}
+
+var LineChart = function LineChart(_ref) {
+  var height = _ref.height,
+      width = _ref.width,
+      padding = _ref.padding,
+      data = _ref.data,
+      labels = _ref.labels,
+      _ref$hourly = _ref.hourly,
+      hourly = _ref$hourly === void 0 ? true : _ref$hourly;
+
   var _useState = React.useState(null),
       tooltipVisible = _useState[0],
       setTooltipVisible = _useState[1];
 
-  var height = props.height,
-      width = props.width,
-      padding = props.padding,
-      data = props.data,
-      labels = props.labels;
   if (!data) return null;
   var initialState2 = {};
   data.forEach(function (data, idx) {
@@ -59,7 +104,8 @@ var LineChart = function LineChart(props) {
       visible = _useState2[0],
       setVisible = _useState2[1];
 
-  var colors = ['#304e62', '#55bcc8', '#ABABAB', '#304e62', '#55bcc8', '#ABABAB'];
+  var colors = ['#55bcc8', '#304e62', '#ABABAB', '#304e62', '#55bcc8', '#ABABAB'];
+  var colorsFill = ['#55bcc8', '#304e62', '#ABABAB', '#304e62', '#55bcc8', '#ABABAB'];
   var FONT_SIZE = 12;
   var maxX = Math.max.apply(Math, data.map(function (d) {
     return Math.max.apply(Math, d.map(function (e) {
@@ -85,6 +131,7 @@ var LineChart = function LineChart(props) {
   })) * 1.25;
   var minZeros = Math.pow(10, Math.abs(minValue).toFixed().toString().length - 1);
   var minY = Math.floor(minValue / minZeros) * minZeros;
+  var zeroY = height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height || 200;
 
   if (minY > 0) {
     minY = 0;
@@ -99,6 +146,13 @@ var LineChart = function LineChart(props) {
       return x + "," + y;
     }).join(' ');
   });
+  var polygonPoints = data.map(function (singlePlot) {
+    return "0," + zeroY + " " + singlePlot.map(function (element) {
+      var x = (element.x - minX) / (maxX - minX) * width + padding;
+      var y = height - element.y / Math.abs(maxY - minY) * height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height;
+      return x + "," + y;
+    }).join(' ') + (" " + width + "," + zeroY);
+  });
   var pointsCoords = data.map(function (singlePlot, idx) {
     return singlePlot.map(function (element) {
       var x = (element.x - minX) / (maxX - minX) * width + padding;
@@ -107,10 +161,10 @@ var LineChart = function LineChart(props) {
     });
   });
 
-  var Axis = function Axis(_ref) {
-    var points = _ref.points,
-        _ref$stroke = _ref.stroke,
-        stroke = _ref$stroke === void 0 ? '#EDEDED' : _ref$stroke;
+  var Axis = function Axis(_ref2) {
+    var points = _ref2.points,
+        _ref2$stroke = _ref2.stroke,
+        stroke = _ref2$stroke === void 0 ? '#EDEDED' : _ref2$stroke;
     return /*#__PURE__*/React__default.createElement("polyline", {
       fill: "solid",
       stroke: stroke,
@@ -121,8 +175,6 @@ var LineChart = function LineChart(props) {
   };
 
   var XAxis = function XAxis() {
-    var zeroY = height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height || 200;
-    console.log(zeroY);
     return /*#__PURE__*/React__default.createElement(Axis, {
       stroke: "#a0a0a0",
       points: padding + "," + zeroY + " " + width + "," + zeroY
@@ -162,8 +214,48 @@ var LineChart = function LineChart(props) {
     });
   };
 
+  var labelsXAxisHourly = function labelsXAxisHourly() {
+    var hours = [];
+    var lastHour = null;
+
+    for (var _iterator = _createForOfIteratorHelperLoose(data[0]), _step; !(_step = _iterator()).done;) {
+      var element = _step.value;
+      var currentHour = element.label.split(':')[0];
+      var currentHalf = element.label.split(':')[1] > 20 && element.label.split(':')[1] < 40 ? 30 : null;
+
+      if (lastHour != currentHour) {
+        hours.push([element.x, lastHour + ":" + (currentHalf ? '30' : '00')]);
+        lastHour = currentHour;
+      }
+    }
+
+    return hours.slice(1);
+  };
+
   var LabelsXAxis = function LabelsXAxis() {
     var y = height - padding + FONT_SIZE * 2 - Math.abs(minY) / Math.abs(maxY - minY) * height || 224;
+
+    if (hourly) {
+      var labelsPerHour = labelsXAxisHourly();
+      return labelsPerHour.map(function (element, index) {
+        var x = (element[0] - minX) / (maxX - minX) * width + 10 - FONT_SIZE / 2;
+        return /*#__PURE__*/React__default.createElement("text", {
+          key: index,
+          x: x,
+          y: y - 20,
+          dominantBaseline: "central",
+          textAnchor: "start",
+          transform: "rotate(45, " + x + ", " + y + ")",
+          style: {
+            fill: '#a0a0a0',
+            fontSize: FONT_SIZE,
+            fontWeight: 'bold',
+            fontFamily: 'Nunito'
+          }
+        }, element[1]);
+      });
+    }
+
     return data[0].map(function (element, index) {
       var x = (element.x - minX) / (maxX - minX) * width + 10 - FONT_SIZE / 2;
       return /*#__PURE__*/React__default.createElement("text", {
@@ -192,13 +284,13 @@ var LineChart = function LineChart(props) {
     });
   };
 
-  var Mark = function Mark(_ref2) {
-    var coord = _ref2.coord,
-        idx = _ref2.idx,
-        onMouseOver = _ref2.onMouseOver,
-        onMouseLeave = _ref2.onMouseLeave,
-        _ref2$color = _ref2.color,
-        color = _ref2$color === void 0 ? "red" : _ref2$color;
+  var Mark = function Mark(_ref3) {
+    var coord = _ref3.coord,
+        idx = _ref3.idx,
+        onMouseOver = _ref3.onMouseOver,
+        onMouseLeave = _ref3.onMouseLeave,
+        _ref3$color = _ref3.color,
+        color = _ref3$color === void 0 ? "red" : _ref3$color;
     return /*#__PURE__*/React__default.createElement("g", {
       key: "dot-" + idx,
       pointerEvents: "all",
@@ -212,15 +304,15 @@ var LineChart = function LineChart(props) {
     }));
   };
 
-  var Tooltips = function Tooltips(_ref3) {
-    var _ref3$x = _ref3.x,
-        x = _ref3$x === void 0 ? 500 : _ref3$x,
-        _ref3$y = _ref3.y,
-        y = _ref3$y === void 0 ? 70 : _ref3$y,
-        _ref3$label = _ref3.label,
-        label = _ref3$label === void 0 ? "545.245 MW" : _ref3$label,
-        _ref3$sublabel = _ref3.sublabel,
-        sublabel = _ref3$sublabel === void 0 ? "3:24:02" : _ref3$sublabel;
+  var Tooltips = function Tooltips(_ref4) {
+    var _ref4$x = _ref4.x,
+        x = _ref4$x === void 0 ? 500 : _ref4$x,
+        _ref4$y = _ref4.y,
+        y = _ref4$y === void 0 ? 70 : _ref4$y,
+        _ref4$label = _ref4.label,
+        label = _ref4$label === void 0 ? "545.245 MW" : _ref4$label,
+        _ref4$sublabel = _ref4.sublabel,
+        sublabel = _ref4$sublabel === void 0 ? "3:24:02" : _ref4$sublabel;
     var rectPos = [x - 35, y - 40];
     var height = 25;
     var width = 50;
@@ -271,17 +363,69 @@ var LineChart = function LineChart(props) {
     }, labels[idx]);
   })), /*#__PURE__*/React__default.createElement("svg", {
     viewBox: "0 0 " + width + " " + (height + 100)
-  }, /*#__PURE__*/React__default.createElement("style", null, ".small {color: 'red'} "), /*#__PURE__*/React__default.createElement(XAxis, null), /*#__PURE__*/React__default.createElement(LabelsXAxis, null), /*#__PURE__*/React__default.createElement(HorizontalGuides, null), points.map(function (points, idx) {
+  }, /*#__PURE__*/React__default.createElement("style", null, ".small {color: 'red'} .linear {backgroundColor:'blue'}"), /*#__PURE__*/React__default.createElement("defs", null, /*#__PURE__*/React__default.createElement("linearGradient", {
+    id: "three_opacity_0",
+    gradientTransform: "rotate(90)"
+  }, /*#__PURE__*/React__default.createElement("stop", {
+    offset: "0%",
+    stopColor: colorsFill[0],
+    stopOpacity: "0.7"
+  }), /*#__PURE__*/React__default.createElement("stop", {
+    offset: "50%",
+    stopColor: colorsFill[0],
+    stopOpacity: "0.2"
+  }), /*#__PURE__*/React__default.createElement("stop", {
+    offset: "100%",
+    stopColor: colorsFill[0],
+    stopOpacity: "0.0"
+  })), /*#__PURE__*/React__default.createElement("linearGradient", {
+    id: "three_opacity_1",
+    gradientTransform: "rotate(90)"
+  }, /*#__PURE__*/React__default.createElement("stop", {
+    offset: "0%",
+    stopColor: colorsFill[1],
+    stopOpacity: "0.7"
+  }), /*#__PURE__*/React__default.createElement("stop", {
+    offset: "50%",
+    stopColor: colorsFill[1],
+    stopOpacity: "0.2"
+  }), /*#__PURE__*/React__default.createElement("stop", {
+    offset: "100%",
+    stopColor: colorsFill[1],
+    stopOpacity: "0.0"
+  })), /*#__PURE__*/React__default.createElement("linearGradient", {
+    id: "three_opacity_2",
+    gradientTransform: "rotate(90)"
+  }, /*#__PURE__*/React__default.createElement("stop", {
+    offset: "0%",
+    stopColor: colorsFill[2],
+    stopOpacity: "0.7"
+  }), /*#__PURE__*/React__default.createElement("stop", {
+    offset: "50%",
+    stopColor: colorsFill[2],
+    stopOpacity: "0.2"
+  }), /*#__PURE__*/React__default.createElement("stop", {
+    offset: "100%",
+    stopColor: colorsFill[2],
+    stopOpacity: "0.0"
+  }))), /*#__PURE__*/React__default.createElement(XAxis, null), /*#__PURE__*/React__default.createElement(LabelsXAxis, null), /*#__PURE__*/React__default.createElement(HorizontalGuides, null), polygonPoints.map(function (points, idx) {
     if (visible[idx]) {
-      return /*#__PURE__*/React__default.createElement("polyline", {
+      return /*#__PURE__*/React__default.createElement(React.Fragment, null, /*#__PURE__*/React__default.createElement("polygon", {
+        points: points,
+        fill: "url('#three_opacity_" + idx + "')"
+      }));
+    }
+  }), points.map(function (points, idx) {
+    if (visible[idx]) {
+      return /*#__PURE__*/React__default.createElement(React.Fragment, null, /*#__PURE__*/React__default.createElement("polyline", {
         key: idx,
         fill: "none",
         stroke: colors[idx],
         strokeWidth: "3px",
         strokeLinecap: "round",
-        strokeDasharray: "5 5",
+        strokeDasharray: "1",
         points: points
-      });
+      }));
     }
   }), pointsCoords.map(function (coords, idxParent) {
     if (visible[idxParent]) {

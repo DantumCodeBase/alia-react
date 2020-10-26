@@ -2,9 +2,8 @@ import React, { Fragment, useState } from 'react'
 import Tooltip from '../Tooltip'
 import './LineChart.scss'
 
-export const LineChart = (props) => {
+export const LineChart = ({ height, width, padding, data, labels, hourly=true }) => {
   const [tooltipVisible, setTooltipVisible] = useState(null)
-  const { height, width, padding, data, labels } = props
 
   if (!data) return null
 
@@ -14,8 +13,17 @@ export const LineChart = (props) => {
   const [visible, setVisible] = useState(initialState2)
 
   const colors = [
+    '#55bcc8',
+    '#304e62',
+    '#ABABAB',
     '#304e62',
     '#55bcc8',
+    '#ABABAB'
+  ]
+
+  const colorsFill = [
+    '#55bcc8',
+    '#304e62',
     '#ABABAB',
     '#304e62',
     '#55bcc8',
@@ -33,7 +41,7 @@ export const LineChart = (props) => {
   const minValue = Math.min(...data.map((d) => Math.min(...d.map((e) => e.y)))) * 1.25;
   const minZeros = 10 ** (Math.abs(minValue).toFixed().toString().length - 1)
   let minY = (Math.floor(minValue / minZeros) * minZeros)
-
+  const zeroY = height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height || 200;
   if (minY > 0){
     minY = 0
   }
@@ -50,6 +58,17 @@ export const LineChart = (props) => {
         return `${x},${y}`
       })
       .join(' ')
+  )
+
+  const polygonPoints = data.map((singlePlot) =>
+    (`0,${zeroY} ` +  singlePlot
+      .map((element) => {
+        // Calculate coordinates
+        const x = ((element.x - minX) / (maxX - minX)) * width + padding
+        const y = height - (element.y / Math.abs(maxY - minY)) * height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height 
+        return `${x},${y}`
+      })
+      .join(' ') + ` ${width},${zeroY}`) 
   )
 
 
@@ -75,8 +94,7 @@ export const LineChart = (props) => {
   )
 
   const XAxis = () => {
-    const zeroY = height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height || 200;
-    console.log(zeroY)
+    
 
     return (<Axis stroke='#a0a0a0' points={`${padding},${zeroY} ${width},${zeroY}`} />);
 
@@ -124,9 +142,56 @@ export const LineChart = (props) => {
     })
   }
 
+
+  const labelsXAxisHourly = () => {
+    const hours = []
+
+    let lastHour = null
+    for(let element of data[0]){
+      const currentHour = element.label.split(':')[0]
+      const currentHalf = (element.label.split(':')[1] > 20 && element.label.split(':')[1] < 40) ? 30 : null
+      if(lastHour != currentHour){
+        hours.push([element.x, `${lastHour}:${currentHalf ? '30':'00'}`])
+        lastHour = currentHour
+      } 
+
+
+    }
+  
+    return hours.slice(1)
+  }
+
+
   const LabelsXAxis = () => {
     const y = height - padding + FONT_SIZE * 2 - Math.abs(minY)/Math.abs(maxY-minY)*height || 224;
 
+
+    if(hourly){
+        const labelsPerHour = labelsXAxisHourly()
+        return labelsPerHour.map((element, index) => {
+            const x =
+            ((element[0] - minX) / (maxX - minX)) * width + 10 - FONT_SIZE / 2
+    
+          return (
+            <text
+              key={index}
+              x={x}
+              y={y - 20}
+              dominantBaseline='central'
+              textAnchor='start'
+              transform={`rotate(45, ${x}, ${y})`}
+              style={{
+                fill: '#a0a0a0',
+                fontSize: FONT_SIZE,
+                fontWeight: 'bold',
+                fontFamily: 'Nunito'
+              }}
+            >
+              {element[1]}
+            </text>
+          )
+          })
+    }
 
     return data[0].map((element, index) => {
       const x =
@@ -228,28 +293,55 @@ export const LineChart = (props) => {
         ))}
       </div>
       <svg viewBox={`0 0 ${width} ${height + 100}`}>
-        <style>{`.small {color: 'red'} `}</style>
-
+        <style>{`.small {color: 'red'} .linear {backgroundColor:'blue'}`}</style>
+        <defs>
+          <linearGradient  id="three_opacity_0" gradientTransform="rotate(90)">
+            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.7" />
+            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.2" />
+            <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
+          </linearGradient>
+          <linearGradient  id="three_opacity_1" gradientTransform="rotate(90)">
+            <stop offset="0%" stopColor={colorsFill[1]} stopOpacity="0.7" />
+            <stop offset="50%" stopColor={colorsFill[1]} stopOpacity="0.2" />
+            <stop offset="100%" stopColor={colorsFill[1]} stopOpacity="0.0" />
+          </linearGradient>
+          <linearGradient  id="three_opacity_2" gradientTransform="rotate(90)">
+            <stop offset="0%" stopColor={colorsFill[2]} stopOpacity="0.7" />
+            <stop offset="50%" stopColor={colorsFill[2]} stopOpacity="0.2" />
+            <stop offset="100%" stopColor={colorsFill[2]} stopOpacity="0.0" />
+          </linearGradient>
+        </defs>
         <XAxis />
         <LabelsXAxis />
         
         {/* <YAxis /> */}
         <HorizontalGuides />
+        {polygonPoints.map((points, idx) => {
+          if (visible[idx]) {
+            return (<>
+               <polygon points={points} fill={`url('#three_opacity_${idx}')`}/>
+              </>
+            )
+          }
+        })}
         {points.map((points, idx) => {
           if (visible[idx]) {
-            return (
+            return (<>
               <polyline
                 key={idx}
                 fill='none'
                 stroke={colors[idx]}
                 strokeWidth='3px'
                 strokeLinecap='round'
-                strokeDasharray='5 5'
+                strokeDasharray='1'
                 points={points}
               />
+              </>
             )
           }
         })}
+
+
         {pointsCoords.map((coords, idxParent) => {
           if (visible[idxParent]) {
             return coords.map((coord, idx)=> {
