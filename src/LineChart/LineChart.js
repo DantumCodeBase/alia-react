@@ -233,10 +233,9 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
 
 
   const Mark = ({coord, idx, onMouseOver, onMouseLeave, color="red"}) => {
-
     return (
      <g key={`dot-${idx}`} pointerEvents='all' onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
-        <circle key={`circle-${idx}`} cx={coord[0]} cy={coord[1]} r='3' fill='none'/>
+        <circle key={`circle-${idx}`} cx={coord[0]} cy={coord[1]} r='4' fill={tooltipVisible === `${coord[0]}-${coord[3]}` ? colorsFill[0]:'none'}/>
       </g>
       )
   }

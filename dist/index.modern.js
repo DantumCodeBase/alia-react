@@ -297,8 +297,8 @@ var LineChart = function LineChart(_ref) {
       key: "circle-" + idx,
       cx: coord[0],
       cy: coord[1],
-      r: "3",
-      fill: "none"
+      r: "4",
+      fill: tooltipVisible === coord[0] + "-" + coord[3] ? colorsFill[0] : 'none'
     }));
   };
 
