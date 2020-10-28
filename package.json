@@ -51,7 +51,6 @@
     "dist"
   ],
   "dependencies": {
-    "alia-react": "https://github.com/DantumCodeBase/alia-react",
     "node-sass": "^4.14.1"
   }
 }
