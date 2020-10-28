@@ -134,8 +134,6 @@ var LineChart = function LineChart(_ref) {
     minY = 0;
   }
 
-  console.log("minimum", minY);
-  console.log("max", maxY);
   var points = data.map(function (singlePlot) {
     return singlePlot.map(function (element) {
       var x = (element.x - minX) / (maxX - minX) * width + padding;
@@ -213,16 +211,20 @@ var LineChart = function LineChart(_ref) {
 
   var labelsXAxisHourly = function labelsXAxisHourly() {
     var hours = [];
-    var lastHour = null;
+    var lastHour = 0;
+    var lastHalf = 0;
+    var lastX = null;
 
     for (var _iterator = _createForOfIteratorHelperLoose(data[0]), _step; !(_step = _iterator()).done;) {
       var element = _step.value;
       var currentHour = element.label.split(':')[0];
       var currentHalf = element.label.split(':')[1] > 20 && element.label.split(':')[1] < 40 ? 30 : null;
 
-      if (lastHour != currentHour) {
-        hours.push([element.x - 1, lastHour + ":" + (currentHalf ? '30' : '00')]);
+      if (lastHour != currentHour || currentHalf) {
+        hours.push([lastX, lastHour + ":" + (lastHalf ? '30' : '00')]);
         lastHour = currentHour;
+        lastHalf = currentHalf;
+        lastX = element.x;
       }
     }
 

@@ -46,8 +46,6 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
     minY = 0
   }
   
-  console.log("minimum", minY)
-  console.log("max", maxY)
 
   const points = data.map((singlePlot) =>
     singlePlot
@@ -146,13 +144,17 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
   const labelsXAxisHourly = () => {
     const hours = []
 
-    let lastHour = null
+    let lastHour = 0
+    let lastHalf = 0
+    let lastX = null
     for(let element of data[0]){
       const currentHour = element.label.split(':')[0]
       const currentHalf = (element.label.split(':')[1] > 20 && element.label.split(':')[1] < 40) ? 30 : null
-      if(lastHour != currentHour){
-        hours.push([element.x - 1, `${lastHour}:${currentHalf ? '30':'00'}`])
+      if(lastHour != currentHour || currentHalf){
+        hours.push([lastX, `${lastHour}:${lastHalf ? '30':'00'}`])
         lastHour = currentHour
+        lastHalf = currentHalf
+        lastX = element.x
       } 
 
 
