@@ -224,7 +224,7 @@ var LineChart = function LineChart(_ref) {
       var currentHalf = element.label.split(':')[1] > 20 && element.label.split(':')[1] < 40 ? 30 : null;
 
       if (lastHour != currentHour) {
-        hours.push([element.x, lastHour + ":" + (currentHalf ? '30' : '00')]);
+        hours.push([element.x - 1, lastHour + ":" + (currentHalf ? '30' : '00')]);
         lastHour = currentHour;
       }
     }
