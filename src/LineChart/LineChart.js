@@ -150,7 +150,7 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
     for(let element of data[0]){
       const currentHour = element.label.split(':')[0]
       const currentHalf = (element.label.split(':')[1] > 20 && element.label.split(':')[1] < 40) ? 30 : null
-      if(lastHour != currentHour || currentHalf){
+      if(lastHour != currentHour){
         hours.push([lastX, `${lastHour}:${lastHalf ? '30':'00'}`])
         lastHour = currentHour
         lastHalf = currentHalf
