@@ -298,29 +298,29 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
         <style>{`.small {color: 'red'} .linear {backgroundColor:'blue'}`}</style>
         <defs>
           <linearGradient  id="three_opacity_0" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.7" />
-            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.2" />
+            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
+            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.1" />
             <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
           </linearGradient>
           <linearGradient  id="three_opacity_1" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor={colorsFill[1]} stopOpacity="0.7" />
-            <stop offset="50%" stopColor={colorsFill[1]} stopOpacity="0.2" />
-            <stop offset="100%" stopColor={colorsFill[1]} stopOpacity="0.0" />
+            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
+            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.1" />
+            <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
           </linearGradient>
           <linearGradient  id="three_opacity_2" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor={colorsFill[2]} stopOpacity="0.7" />
-            <stop offset="50%" stopColor={colorsFill[2]} stopOpacity="0.2" />
-            <stop offset="100%" stopColor={colorsFill[2]} stopOpacity="0.0" />
-          </linearGradient>
-          <linearGradient  id="three_opacity_3" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.7" />
+            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
             <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.2" />
             <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
           </linearGradient>
+          <linearGradient  id="three_opacity_3" gradientTransform="rotate(90)">
+            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
+            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.1" />
+            <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
+          </linearGradient>
           <linearGradient  id="three_opacity_4" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor={colorsFill[1]} stopOpacity="0.7" />
-            <stop offset="50%" stopColor={colorsFill[1]} stopOpacity="0.2" />
-            <stop offset="100%" stopColor={colorsFill[1]} stopOpacity="0.0" />
+            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
+            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.1" />
+            <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
           </linearGradient>
         </defs>
         <XAxis />

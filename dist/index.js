@@ -3,7 +3,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var React = require('react');
 var React__default = _interopDefault(React);
 
-var styles = {"test":"_3ybTi"};
+var styles = {"test":"_styles-module__test__3ybTi"};
 
 var Input = function Input() {
   return /*#__PURE__*/React__default.createElement("input", {
@@ -371,11 +371,11 @@ var LineChart = function LineChart(_ref) {
   }, /*#__PURE__*/React__default.createElement("stop", {
     offset: "0%",
     stopColor: colorsFill[0],
-    stopOpacity: "0.7"
+    stopOpacity: "0.6"
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "50%",
     stopColor: colorsFill[0],
-    stopOpacity: "0.2"
+    stopOpacity: "0.1"
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "100%",
     stopColor: colorsFill[0],
@@ -385,30 +385,30 @@ var LineChart = function LineChart(_ref) {
     gradientTransform: "rotate(90)"
   }, /*#__PURE__*/React__default.createElement("stop", {
     offset: "0%",
-    stopColor: colorsFill[1],
-    stopOpacity: "0.7"
+    stopColor: colorsFill[0],
+    stopOpacity: "0.6"
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "50%",
-    stopColor: colorsFill[1],
-    stopOpacity: "0.2"
+    stopColor: colorsFill[0],
+    stopOpacity: "0.1"
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "100%",
-    stopColor: colorsFill[1],
+    stopColor: colorsFill[0],
     stopOpacity: "0.0"
   })), /*#__PURE__*/React__default.createElement("linearGradient", {
     id: "three_opacity_2",
     gradientTransform: "rotate(90)"
   }, /*#__PURE__*/React__default.createElement("stop", {
     offset: "0%",
-    stopColor: colorsFill[2],
-    stopOpacity: "0.7"
+    stopColor: colorsFill[0],
+    stopOpacity: "0.6"
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "50%",
-    stopColor: colorsFill[2],
+    stopColor: colorsFill[0],
     stopOpacity: "0.2"
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "100%",
-    stopColor: colorsFill[2],
+    stopColor: colorsFill[0],
     stopOpacity: "0.0"
   })), /*#__PURE__*/React__default.createElement("linearGradient", {
     id: "three_opacity_3",
@@ -416,11 +416,11 @@ var LineChart = function LineChart(_ref) {
   }, /*#__PURE__*/React__default.createElement("stop", {
     offset: "0%",
     stopColor: colorsFill[0],
-    stopOpacity: "0.7"
+    stopOpacity: "0.6"
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "50%",
     stopColor: colorsFill[0],
-    stopOpacity: "0.2"
+    stopOpacity: "0.1"
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "100%",
     stopColor: colorsFill[0],
@@ -430,15 +430,15 @@ var LineChart = function LineChart(_ref) {
     gradientTransform: "rotate(90)"
   }, /*#__PURE__*/React__default.createElement("stop", {
     offset: "0%",
-    stopColor: colorsFill[1],
-    stopOpacity: "0.7"
+    stopColor: colorsFill[0],
+    stopOpacity: "0.6"
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "50%",
-    stopColor: colorsFill[1],
-    stopOpacity: "0.2"
+    stopColor: colorsFill[0],
+    stopOpacity: "0.1"
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "100%",
-    stopColor: colorsFill[1],
+    stopColor: colorsFill[0],
     stopOpacity: "0.0"
   }))), /*#__PURE__*/React__default.createElement(XAxis, null), /*#__PURE__*/React__default.createElement(LabelsXAxis, null), /*#__PURE__*/React__default.createElement(HorizontalGuides, null), polygonPoints.map(function (points, idx) {
     if (visible[idx]) {
