@@ -144,9 +144,9 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
   const labelsXAxisHourly = () => {
     const hours = []
 
-    let lastHour = 0
-    let lastHalf = 0
-    let lastX = null
+    let lastHour = null
+    let lastHalf = null
+    let lastX = 0
     for(let element of data[0]){
       const currentHour = element.label.split(':')[0]
       const currentHalf = (element.label.split(':')[1] > 20 && element.label.split(':')[1] < 40) ? 30 : null
@@ -311,6 +311,16 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
             <stop offset="0%" stopColor={colorsFill[2]} stopOpacity="0.7" />
             <stop offset="50%" stopColor={colorsFill[2]} stopOpacity="0.2" />
             <stop offset="100%" stopColor={colorsFill[2]} stopOpacity="0.0" />
+          </linearGradient>
+          <linearGradient  id="three_opacity_3" gradientTransform="rotate(90)">
+            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.7" />
+            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.2" />
+            <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
+          </linearGradient>
+          <linearGradient  id="three_opacity_4" gradientTransform="rotate(90)">
+            <stop offset="0%" stopColor={colorsFill[1]} stopOpacity="0.7" />
+            <stop offset="50%" stopColor={colorsFill[1]} stopOpacity="0.2" />
+            <stop offset="100%" stopColor={colorsFill[1]} stopOpacity="0.0" />
           </linearGradient>
         </defs>
         <XAxis />

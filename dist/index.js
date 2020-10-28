@@ -214,9 +214,9 @@ var LineChart = function LineChart(_ref) {
 
   var labelsXAxisHourly = function labelsXAxisHourly() {
     var hours = [];
-    var lastHour = 0;
-    var lastHalf = 0;
-    var lastX = null;
+    var lastHour = null;
+    var lastHalf = null;
+    var lastX = 0;
 
     for (var _iterator = _createForOfIteratorHelperLoose(data[0]), _step; !(_step = _iterator()).done;) {
       var element = _step.value;
@@ -409,6 +409,36 @@ var LineChart = function LineChart(_ref) {
   }), /*#__PURE__*/React__default.createElement("stop", {
     offset: "100%",
     stopColor: colorsFill[2],
+    stopOpacity: "0.0"
+  })), /*#__PURE__*/React__default.createElement("linearGradient", {
+    id: "three_opacity_3",
+    gradientTransform: "rotate(90)"
+  }, /*#__PURE__*/React__default.createElement("stop", {
+    offset: "0%",
+    stopColor: colorsFill[0],
+    stopOpacity: "0.7"
+  }), /*#__PURE__*/React__default.createElement("stop", {
+    offset: "50%",
+    stopColor: colorsFill[0],
+    stopOpacity: "0.2"
+  }), /*#__PURE__*/React__default.createElement("stop", {
+    offset: "100%",
+    stopColor: colorsFill[0],
+    stopOpacity: "0.0"
+  })), /*#__PURE__*/React__default.createElement("linearGradient", {
+    id: "three_opacity_4",
+    gradientTransform: "rotate(90)"
+  }, /*#__PURE__*/React__default.createElement("stop", {
+    offset: "0%",
+    stopColor: colorsFill[1],
+    stopOpacity: "0.7"
+  }), /*#__PURE__*/React__default.createElement("stop", {
+    offset: "50%",
+    stopColor: colorsFill[1],
+    stopOpacity: "0.2"
+  }), /*#__PURE__*/React__default.createElement("stop", {
+    offset: "100%",
+    stopColor: colorsFill[1],
     stopOpacity: "0.0"
   }))), /*#__PURE__*/React__default.createElement(XAxis, null), /*#__PURE__*/React__default.createElement(LabelsXAxis, null), /*#__PURE__*/React__default.createElement(HorizontalGuides, null), polygonPoints.map(function (points, idx) {
     if (visible[idx]) {
