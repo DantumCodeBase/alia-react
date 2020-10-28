@@ -236,7 +236,7 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
 
     return (
      <g key={`dot-${idx}`} pointerEvents='all' onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
-        <circle cx={coord[0]} cy={coord[1]} r='3' fill={color}/>
+        <circle key={`circle-${idx}`} cx={coord[0]} cy={coord[1]} r='3' fill='none'/>
       </g>
       )
   }
@@ -297,27 +297,7 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
       <svg viewBox={`0 0 ${width} ${height + 100}`}>
         <style>{`.small {color: 'red'} .linear {backgroundColor:'blue'}`}</style>
         <defs>
-          <linearGradient  id="three_opacity_0" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
-            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.1" />
-            <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
-          </linearGradient>
-          <linearGradient  id="three_opacity_1" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
-            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.1" />
-            <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
-          </linearGradient>
-          <linearGradient  id="three_opacity_2" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
-            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.2" />
-            <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
-          </linearGradient>
-          <linearGradient  id="three_opacity_3" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
-            <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.1" />
-            <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
-          </linearGradient>
-          <linearGradient  id="three_opacity_4" gradientTransform="rotate(90)">
+          <linearGradient  id="three_opacity" gradientTransform="rotate(90)">
             <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
             <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.1" />
             <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
@@ -331,7 +311,7 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
         {polygonPoints.map((points, idx) => {
           if (visible[idx]) {
             return (<>
-               <polygon points={points} fill={`url('#three_opacity_${idx}')`}/>
+               <polygon key={idx} points={points} fill={`url('#three_opacity')`}/>
               </>
             )
           }
