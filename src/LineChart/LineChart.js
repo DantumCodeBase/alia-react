@@ -450,12 +450,12 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
                     coord={coord}
                     idx={idx}
                     color={colors[idxParent]}
-                    onMouseOver={() =>
-                      setTooltipVisible(`${coord[0]}-${coord[3]}`)
-                    }
-                    onMouseLeave={() => {
-                      setTooltipVisible(null)
-                    }}
+                    // onMouseOver={() =>
+                    //   setTooltipVisible(`${coord[0]}-${coord[3]}`)
+                    // }
+                    // onMouseLeave={() => {
+                    //   setTooltipVisible(null)
+                    // }}
                   />
                   
 

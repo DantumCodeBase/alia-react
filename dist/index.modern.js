@@ -475,13 +475,7 @@ var LineChart = function LineChart(_ref) {
           key: idx,
           coord: coord,
           idx: idx,
-          color: colors[idxParent],
-          onMouseOver: function onMouseOver() {
-            return setTooltipVisible(coord[0] + "-" + coord[3]);
-          },
-          onMouseLeave: function onMouseLeave() {
-            setTooltipVisible(null);
-          }
+          color: colors[idxParent]
         }));
       });
     }
