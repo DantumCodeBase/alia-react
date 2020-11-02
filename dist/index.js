@@ -94,15 +94,18 @@ var LineChart = function LineChart(_ref) {
       tooltipVisible = _useState[0],
       setTooltipVisible = _useState[1];
 
+  var _useState2 = React.useState(0),
+      setCurrentX = _useState2[1];
+
   if (!data) return null;
   var initialState2 = {};
   data.forEach(function (data, idx) {
     return initialState2[idx] = true;
   });
 
-  var _useState2 = React.useState(initialState2),
-      visible = _useState2[0],
-      setVisible = _useState2[1];
+  var _useState3 = React.useState(initialState2),
+      visible = _useState3[0],
+      setVisible = _useState3[1];
 
   var colors = ['#55bcc8', '#304e62', '#ABABAB', '#304e62', '#55bcc8', '#ABABAB'];
   var colorsFill = ['#55bcc8', '#304e62', '#ABABAB', '#304e62', '#55bcc8', '#ABABAB'];
@@ -158,11 +161,17 @@ var LineChart = function LineChart(_ref) {
       return [x, y, element.y, idx, element.label];
     });
   });
+  var xPointCoords = data.map(function (singlePlot, idx) {
+    return singlePlot.map(function (element) {
+      var x = (element.x - minX) / (maxX - minX) * width + padding;
+      return Math.round(x);
+    });
+  });
 
-  var Axis = function Axis(_ref2) {
-    var points = _ref2.points,
-        _ref2$stroke = _ref2.stroke,
-        stroke = _ref2$stroke === void 0 ? '#EDEDED' : _ref2$stroke;
+  var Axis = function Axis(_ref3) {
+    var points = _ref3.points,
+        _ref3$stroke = _ref3.stroke,
+        stroke = _ref3$stroke === void 0 ? '#EDEDED' : _ref3$stroke;
     return /*#__PURE__*/React__default.createElement("polyline", {
       fill: "solid",
       stroke: stroke,
@@ -286,34 +295,42 @@ var LineChart = function LineChart(_ref) {
     });
   };
 
-  var Mark = function Mark(_ref3) {
-    var coord = _ref3.coord,
-        idx = _ref3.idx,
-        onMouseOver = _ref3.onMouseOver,
-        onMouseLeave = _ref3.onMouseLeave;
+  var Mark = function Mark(_ref4) {
+    var coord = _ref4.coord,
+        idx = _ref4.idx,
+        onMouseOver = _ref4.onMouseOver,
+        onMouseLeave = _ref4.onMouseLeave;
     return /*#__PURE__*/React__default.createElement("g", {
       key: "dot-" + idx,
-      pointerEvents: "all",
-      onMouseOver: onMouseOver,
-      onMouseLeave: onMouseLeave
+      pointerEvents: "all"
     }, /*#__PURE__*/React__default.createElement("circle", {
       key: "circle-" + idx,
       cx: coord[0],
       cy: coord[1],
-      r: "4",
+      r: "5",
       fill: tooltipVisible === coord[0] + "-" + coord[3] ? colorsFill[0] : 'none'
+    }), /*#__PURE__*/React__default.createElement("circle", {
+      key: "circlecontour-" + idx,
+      onMouseOver: onMouseOver,
+      onMouseLeave: onMouseLeave,
+      cx: coord[0],
+      cy: coord[1],
+      r: "10",
+      fill: "none",
+      strokeWidth: "2",
+      stroke: tooltipVisible === coord[0] + "-" + coord[3] ? colorsFill[0] : 'none'
     }));
   };
 
-  var Tooltips = function Tooltips(_ref4) {
-    var _ref4$x = _ref4.x,
-        x = _ref4$x === void 0 ? 500 : _ref4$x,
-        _ref4$y = _ref4.y,
-        y = _ref4$y === void 0 ? 70 : _ref4$y,
-        _ref4$label = _ref4.label,
-        label = _ref4$label === void 0 ? "545.245 MW" : _ref4$label,
-        _ref4$sublabel = _ref4.sublabel,
-        sublabel = _ref4$sublabel === void 0 ? "3:24:02" : _ref4$sublabel;
+  var Tooltips = function Tooltips(_ref5) {
+    var _ref5$x = _ref5.x,
+        x = _ref5$x === void 0 ? 500 : _ref5$x,
+        _ref5$y = _ref5.y,
+        y = _ref5$y === void 0 ? 70 : _ref5$y,
+        _ref5$label = _ref5.label,
+        label = _ref5$label === void 0 ? "545.245 MW" : _ref5$label,
+        _ref5$sublabel = _ref5.sublabel,
+        sublabel = _ref5$sublabel === void 0 ? "3:24:02" : _ref5$sublabel;
     var rectPos = [x - 35, y - 40];
     var height = 25;
     var width = 50;
@@ -363,7 +380,15 @@ var LineChart = function LineChart(_ref) {
       }
     }, labels[idx]);
   })), /*#__PURE__*/React__default.createElement("svg", {
-    viewBox: "0 0 " + width + " " + (height + 100)
+    viewBox: "0 0 " + width + " " + (height + 100),
+    onMouseMove: function onMouseMove(event) {
+      var bounds = event.target.getBoundingClientRect();
+      var coordX = Math.round((event.clientX - bounds.x) * 1.145);
+
+      if (xPointCoords[0].includes(coordX)) {
+        setCurrentX(coordX);
+      }
+    }
   }, /*#__PURE__*/React__default.createElement("style", null, ".small {color: 'red'} .linear {backgroundColor:'blue'}"), /*#__PURE__*/React__default.createElement("defs", null, /*#__PURE__*/React__default.createElement("linearGradient", {
     id: "three_opacity",
     gradientTransform: "rotate(90)"
@@ -420,13 +445,13 @@ var LineChart = function LineChart(_ref) {
     if (visible[idx]) {
       return coords.map(function (coord, idx) {
         var quantity = coord[2].toFixed(2);
-        return /*#__PURE__*/React__default.createElement(React.Fragment, null, tooltipVisible == coord[0] + "-" + coord[3] && /*#__PURE__*/React__default.createElement(Tooltips, {
+        return /*#__PURE__*/React__default.createElement(React.Fragment, null, tooltipVisible == coord[0] + "-" + coord[3] && /*#__PURE__*/React__default.createElement(React.Fragment, null, /*#__PURE__*/React__default.createElement(Tooltips, {
           key: idx,
           x: coord[0],
           y: coord[1],
           label: quantity + " kW",
           sublabel: coord[4]
-        }));
+        })));
       });
     }
   })));

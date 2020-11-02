@@ -4,6 +4,7 @@ import './LineChart.scss'
 
 export const LineChart = ({ height, width, padding, data, labels, hourly=true }) => {
   const [tooltipVisible, setTooltipVisible] = useState(null)
+  const [currentX, setCurrentX] = useState(0)
 
   if (!data) return null
 
@@ -80,7 +81,31 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
         return [x, y, element.y, idx, element.label]
       })
   )
+
+  const xPointCoords = data.map((singlePlot, idx)=>
+      singlePlot.map( element => {
+        const x = ((element.x - minX) / (maxX - minX)) * width + padding
+        return Math.round(x)
+      })
+  )
   
+  const VerticalCurrentX = ({ x, stroke='#a0a0a0' }) => {
+    return (
+      <line
+        x1={x}
+        y1='0'
+        x2={x}
+        y2={height}
+        fill='solid'
+        stroke={stroke}
+        strokeDasharray='5 5'
+        strokeLinecap='round'
+        strokeWidth='2'
+        // style="stroke:rgb(255,0,0);stroke-width:2" 
+      />
+    )
+  }
+
   const Axis = ({ points, stroke='#EDEDED' }) => (
     <polyline
       fill='solid'
@@ -232,10 +257,36 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
   }
 
 
+
   const Mark = ({coord, idx, onMouseOver, onMouseLeave, color="red"}) => {
     return (
-     <g key={`dot-${idx}`} pointerEvents='all' onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
-        <circle key={`circle-${idx}`} cx={coord[0]} cy={coord[1]} r='4' fill={tooltipVisible === `${coord[0]}-${coord[3]}` ? colorsFill[0]:'none'}/>
+     <g key={`dot-${idx}`} pointerEvents='all'>
+        <circle
+          key={`circle-${idx}`}
+          cx={coord[0]}
+          cy={coord[1]}
+          r='5'
+          fill={
+            tooltipVisible === `${coord[0]}-${coord[3]}`
+              ? colorsFill[0]
+              : 'none'
+          }
+        />
+        <circle
+          key={`circlecontour-${idx}`}
+          onMouseOver={onMouseOver}
+          onMouseLeave={onMouseLeave}
+          cx={coord[0]}
+          cy={coord[1]}
+          r='10'
+          fill='none'
+          strokeWidth='2'
+          stroke={
+            tooltipVisible === `${coord[0]}-${coord[3]}`
+              ? colorsFill[0]
+              : 'none'
+          }
+        />
       </g>
       )
   }
@@ -282,7 +333,9 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
 
   return (
     <>
-      <div className='phase' style={{ float: 'right', marginBottom: '15px'}}>
+      <div className='phase' style={{ float: 'right', marginBottom: '15px'}
+    }
+      >
         {points.map((points, idx) => (
           <a
             key={idx}
@@ -293,10 +346,26 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
           </a>
         ))}
       </div>
-      <svg viewBox={`0 0 ${width} ${height + 100}`}>
+      <svg
+        viewBox={`0 0 ${width} ${height + 100}`}
+        onMouseMove={(event) => {
+          const bounds = event.target.getBoundingClientRect()
+          // console.log(event.clientX - bounds.x)
+          // if(pointsCoord)
+          const coordX = Math.round((event.clientX - bounds.x)*1.145)
+          // console.log(coordX)
+          // console.log(xPointCoords[0])
+          if (xPointCoords[0].includes(coordX)) {
+            setCurrentX(coordX)
+          }
+        }}
+      >
         <style>{`.small {color: 'red'} .linear {backgroundColor:'blue'}`}</style>
         <defs>
-          <linearGradient  id="three_opacity" gradientTransform="rotate(90)">
+          <linearGradient
+            id='three_opacity'
+            gradientTransform='rotate(90)'
+          >
             <stop offset="0%" stopColor={colorsFill[0]} stopOpacity="0.6" />
             <stop offset="50%" stopColor={colorsFill[0]} stopOpacity="0.1" />
             <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
@@ -304,7 +373,7 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
         </defs>
         <XAxis />
         <LabelsXAxis />
-        
+
         {/* <YAxis /> */}
         <HorizontalGuides />
         {polygonPoints.map((points, idx) => {
@@ -335,19 +404,25 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
 
         {pointsCoords.map((coords, idxParent) => {
           if (visible[idxParent]) {
-            return coords.map((coord, idx)=> {
+            return coords.map((coord, idx) => {
 
-              return <>
-                <Mark 
-                  key={idx}
-                  coord={coord} 
-                  idx={idx} 
-                  color={colors[idxParent]}
-                  onMouseOver={()=> setTooltipVisible(`${coord[0]}-${coord[3]}`)}
-                  onMouseLeave={()=>{
-                    setTooltipVisible(null)}}
-                ></Mark>
-              </>
+              return (
+                <>
+                  <Mark
+                    key={idx}
+                    coord={coord}
+                    idx={idx}
+                    color={colors[idxParent]}
+                    onMouseOver={() =>
+                      setTooltipVisible(`${coord[0]}-${coord[3]}`)
+                    }
+                    onMouseLeave={() => {
+                      setTooltipVisible(null)
+                    }}
+                  />
+
+                </>
+              )
             }
             )
           }
@@ -358,14 +433,21 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
               return coords.map((coord, idx)=> {
                 const quantity = coord[2].toFixed(2)
                 return <>
-                  { tooltipVisible == `${coord[0]}-${coord[3]}` &&  
-                  <Tooltips key={idx} x={coord[0]} y={coord[1]} label={`${quantity} kW`} sublabel={coord[4]}>
-                  </Tooltips>}
+                  { tooltipVisible == `${coord[0]}-${coord[3]}` && 
+                  <> 
+                    <Tooltips key={idx} x={coord[0]} y={coord[1]} label={`${quantity} kW`} sublabel={coord[4]}>
+                    </Tooltips>
+                  </>
+
+                  }
+
                 </>
               }
               )
             }
-          })}   
+          })} 
+          {/* <VerticalCurrentX x={currentX} /> */}
+
       </svg>
 
       
