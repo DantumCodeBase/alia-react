@@ -372,7 +372,8 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
         onMouseMove={(event) => {
           // console.log(event.clientX - bounds.x)
           const rect = document.getElementById('graphcontainer').getBoundingClientRect();
-          const coordX = Math.round((event.clientX-rect.x)*1.35)
+          console.log(maxX)
+          const coordX = (event.clientX-rect.x)/rect.width * width
           // console.log(coordX)
           // console.log(xPointCoords[0])
 

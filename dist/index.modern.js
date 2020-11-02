@@ -411,7 +411,8 @@ var LineChart = function LineChart(_ref) {
     viewBox: "0 0 " + width + " " + (height + 100),
     onMouseMove: function onMouseMove(event) {
       var rect = document.getElementById('graphcontainer').getBoundingClientRect();
-      var coordX = Math.round((event.clientX - rect.x) * 1.35);
+      console.log(maxX);
+      var coordX = (event.clientX - rect.x) / rect.width * width;
       var curr = xPointCoords[0][0];
 
       for (var _iterator2 = _createForOfIteratorHelperLoose(xPointCoords[0]), _step2; !(_step2 = _iterator2()).done;) {
