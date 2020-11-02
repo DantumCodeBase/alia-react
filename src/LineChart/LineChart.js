@@ -1,10 +1,11 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useRef } from 'react'
 import Tooltip from '../Tooltip'
 import './LineChart.scss'
 
 export const LineChart = ({ height, width, padding, data, labels, hourly=true }) => {
   const [tooltipVisible, setTooltipVisible] = useState(null)
   const [currentX, setCurrentX] = useState(0)
+  const div = useRef();
 
   if (!data) return null
 
@@ -42,11 +43,19 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
   const minValue = Math.min(...data.map((d) => Math.min(...d.map((e) => e.y)))) * 1.25;
   const minZeros = 10 ** (Math.abs(minValue).toFixed().toString().length - 1)
   let minY = (Math.floor(minValue / minZeros) * minZeros)
-  const zeroY = height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height || 200;
-  if (minY > 0){
+
+  let zeroY = 200
+
+  if(minY < 0){
+    zeroY = height + padding - Math.abs(minY) / Math.abs(maxY - minY)*height || 200;
+  }
+
+
+
+  if (minY > 0) {
     minY = 0
   }
-  
+
 
   const points = data.map((singlePlot) =>
     singlePlot
@@ -59,15 +68,16 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
       .join(' ')
   )
 
+  
   const polygonPoints = data.map((singlePlot) =>
-    (`0,${zeroY} ` +  singlePlot
+    (`0,${200} ` +  singlePlot
       .map((element) => {
         // Calculate coordinates
         const x = ((element.x - minX) / (maxX - minX)) * width + padding
-        const y = height - (element.y / Math.abs(maxY - minY)) * height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height 
+        const y = height - (element.y / Math.abs(maxY - minY)) * height + padding - Math.abs(minY)/ Math.abs(maxY - minY)*height
         return `${x},${y}`
       })
-      .join(' ') + ` ${width},${zeroY}`) 
+      .join(' ') + ` ${width},${200}`) 
   )
 
 
@@ -85,7 +95,7 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
   const xPointCoords = data.map((singlePlot, idx)=>
       singlePlot.map( element => {
         const x = ((element.x - minX) / (maxX - minX)) * width + padding
-        return Math.round(x)
+        return x
       })
   )
   
@@ -117,10 +127,7 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
   )
 
   const XAxis = () => {
-    
-
-    return (<Axis stroke='#a0a0a0' points={`${padding},${zeroY} ${width},${zeroY}`} />);
-
+    return (<Axis stroke='#a0a0a0' strokeLinecap='round' points={`${padding},${zeroY} ${width},${zeroY}`} />);
   }
 
 
@@ -287,6 +294,20 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
               : 'none'
           }
         />
+        <polygon 
+          fill={
+            tooltipVisible === `${coord[0]}-${coord[3]}`
+              ? colorsFill[0]
+              : 'none'
+          } 
+          points={`${coord[0] + 15} ${coord[1] - 5}, ${coord[0] + 20} ${coord[1] + 0}, ${coord[0] + 15} ${coord[1]+5}`} />
+          <polygon 
+          fill={
+            tooltipVisible === `${coord[0]}-${coord[3]}`
+              ? colorsFill[0]
+              : 'none'
+          } 
+          points={`${coord[0] - 15} ${coord[1] - 5}, ${coord[0] - 20} ${coord[1] + 0}, ${coord[0] - 15} ${coord[1]+5}`} />
       </g>
       )
   }
@@ -329,11 +350,10 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
     )
   }
 
-  
 
   return (
     <>
-      <div className='phase' style={{ float: 'right', marginBottom: '15px'}
+      <div  className='phase' style={{ float: 'right', marginBottom: '15px'}
     }
       >
         {points.map((points, idx) => (
@@ -346,18 +366,31 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
           </a>
         ))}
       </div>
-      <svg
+      <svg 
+        id='graphcontainer'
         viewBox={`0 0 ${width} ${height + 100}`}
         onMouseMove={(event) => {
-          const bounds = event.target.getBoundingClientRect()
           // console.log(event.clientX - bounds.x)
-          // if(pointsCoord)
-          const coordX = Math.round((event.clientX - bounds.x)*1.145)
+          const rect = document.getElementById('graphcontainer').getBoundingClientRect();
+          const coordX = Math.round((event.clientX-rect.x)*1.35)
           // console.log(coordX)
           // console.log(xPointCoords[0])
-          if (xPointCoords[0].includes(coordX)) {
-            setCurrentX(coordX)
+
+
+          
+          let curr = xPointCoords[0][0]
+          let idx = 0
+          // Find the closest 
+          for(let x of xPointCoords[0]){
+            if(Math.abs(x - coordX) < Math.abs(curr - coordX)) {
+              curr = x
+            }
+            idx++;
           }
+
+          const coord = pointsCoords.map(coords => coords.filter((coord)=> coord[0]===curr))[0][0]
+          setCurrentX(curr)
+          setTooltipVisible(`${coord[0]}-${coord[3]}`)
         }}
       >
         <style>{`.small {color: 'red'} .linear {backgroundColor:'blue'}`}</style>
@@ -371,11 +404,14 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
             <stop offset="100%" stopColor={colorsFill[0]} stopOpacity="0.0" />
           </linearGradient>
         </defs>
+        {currentX && <VerticalCurrentX x={currentX} />}
+
         <XAxis />
         <LabelsXAxis />
 
         {/* <YAxis /> */}
         <HorizontalGuides />
+
         {polygonPoints.map((points, idx) => {
           if (visible[idx]) {
             return (<>
@@ -396,6 +432,7 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
                 strokeDasharray='1'
                 points={points}
               />
+
               </>
             )
           }
@@ -405,7 +442,6 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
         {pointsCoords.map((coords, idxParent) => {
           if (visible[idxParent]) {
             return coords.map((coord, idx) => {
-
               return (
                 <>
                   <Mark
@@ -420,6 +456,7 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
                       setTooltipVisible(null)
                     }}
                   />
+                  
 
                 </>
               )
@@ -446,7 +483,6 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
               )
             }
           })} 
-          {/* <VerticalCurrentX x={currentX} /> */}
 
       </svg>
 

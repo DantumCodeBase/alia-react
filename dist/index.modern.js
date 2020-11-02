@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, useRef, Fragment } from 'react';
 
 var styles = {"test":"_3ybTi"};
 
@@ -92,8 +92,10 @@ var LineChart = function LineChart(_ref) {
       setTooltipVisible = _useState[1];
 
   var _useState2 = useState(0),
+      currentX = _useState2[0],
       setCurrentX = _useState2[1];
 
+  var div = useRef();
   if (!data) return null;
   var initialState2 = {};
   data.forEach(function (data, idx) {
@@ -131,7 +133,11 @@ var LineChart = function LineChart(_ref) {
   })) * 1.25;
   var minZeros = Math.pow(10, Math.abs(minValue).toFixed().toString().length - 1);
   var minY = Math.floor(minValue / minZeros) * minZeros;
-  var zeroY = height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height || 200;
+  var zeroY = 200;
+
+  if (minY < 0) {
+    zeroY = height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height || 200;
+  }
 
   if (minY > 0) {
     minY = 0;
@@ -145,11 +151,11 @@ var LineChart = function LineChart(_ref) {
     }).join(' ');
   });
   var polygonPoints = data.map(function (singlePlot) {
-    return "0," + zeroY + " " + singlePlot.map(function (element) {
+    return "0," + 200 + " " + singlePlot.map(function (element) {
       var x = (element.x - minX) / (maxX - minX) * width + padding;
       var y = height - element.y / Math.abs(maxY - minY) * height + padding - Math.abs(minY) / Math.abs(maxY - minY) * height;
       return x + "," + y;
-    }).join(' ') + (" " + width + "," + zeroY);
+    }).join(' ') + (" " + width + "," + 200);
   });
   var pointsCoords = data.map(function (singlePlot, idx) {
     return singlePlot.map(function (element) {
@@ -161,9 +167,26 @@ var LineChart = function LineChart(_ref) {
   var xPointCoords = data.map(function (singlePlot, idx) {
     return singlePlot.map(function (element) {
       var x = (element.x - minX) / (maxX - minX) * width + padding;
-      return Math.round(x);
+      return x;
     });
   });
+
+  var VerticalCurrentX = function VerticalCurrentX(_ref2) {
+    var x = _ref2.x,
+        _ref2$stroke = _ref2.stroke,
+        stroke = _ref2$stroke === void 0 ? '#a0a0a0' : _ref2$stroke;
+    return /*#__PURE__*/React.createElement("line", {
+      x1: x,
+      y1: "0",
+      x2: x,
+      y2: height,
+      fill: "solid",
+      stroke: stroke,
+      strokeDasharray: "5 5",
+      strokeLinecap: "round",
+      strokeWidth: "2"
+    });
+  };
 
   var Axis = function Axis(_ref3) {
     var points = _ref3.points,
@@ -181,6 +204,7 @@ var LineChart = function LineChart(_ref) {
   var XAxis = function XAxis() {
     return /*#__PURE__*/React.createElement(Axis, {
       stroke: "#a0a0a0",
+      strokeLinecap: "round",
       points: padding + "," + zeroY + " " + width + "," + zeroY
     });
   };
@@ -316,6 +340,12 @@ var LineChart = function LineChart(_ref) {
       fill: "none",
       strokeWidth: "2",
       stroke: tooltipVisible === coord[0] + "-" + coord[3] ? colorsFill[0] : 'none'
+    }), /*#__PURE__*/React.createElement("polygon", {
+      fill: tooltipVisible === coord[0] + "-" + coord[3] ? colorsFill[0] : 'none',
+      points: coord[0] + 15 + " " + (coord[1] - 5) + ", " + (coord[0] + 20) + " " + (coord[1] + 0) + ", " + (coord[0] + 15) + " " + (coord[1] + 5)
+    }), /*#__PURE__*/React.createElement("polygon", {
+      fill: tooltipVisible === coord[0] + "-" + coord[3] ? colorsFill[0] : 'none',
+      points: coord[0] - 15 + " " + (coord[1] - 5) + ", " + (coord[0] - 20) + " " + (coord[1] + 0) + ", " + (coord[0] - 15) + " " + (coord[1] + 5)
     }));
   };
 
@@ -377,14 +407,28 @@ var LineChart = function LineChart(_ref) {
       }
     }, labels[idx]);
   })), /*#__PURE__*/React.createElement("svg", {
+    id: "graphcontainer",
     viewBox: "0 0 " + width + " " + (height + 100),
     onMouseMove: function onMouseMove(event) {
-      var bounds = event.target.getBoundingClientRect();
-      var coordX = Math.round((event.clientX - bounds.x) * 1.145);
+      var rect = document.getElementById('graphcontainer').getBoundingClientRect();
+      var coordX = Math.round((event.clientX - rect.x) * 1.35);
+      var curr = xPointCoords[0][0];
 
-      if (xPointCoords[0].includes(coordX)) {
-        setCurrentX(coordX);
+      for (var _iterator2 = _createForOfIteratorHelperLoose(xPointCoords[0]), _step2; !(_step2 = _iterator2()).done;) {
+        var x = _step2.value;
+
+        if (Math.abs(x - coordX) < Math.abs(curr - coordX)) {
+          curr = x;
+        }
       }
+
+      var coord = pointsCoords.map(function (coords) {
+        return coords.filter(function (coord) {
+          return coord[0] === curr;
+        });
+      })[0][0];
+      setCurrentX(curr);
+      setTooltipVisible(coord[0] + "-" + coord[3]);
     }
   }, /*#__PURE__*/React.createElement("style", null, ".small {color: 'red'} .linear {backgroundColor:'blue'}"), /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("linearGradient", {
     id: "three_opacity",
@@ -401,7 +445,9 @@ var LineChart = function LineChart(_ref) {
     offset: "100%",
     stopColor: colorsFill[0],
     stopOpacity: "0.0"
-  }))), /*#__PURE__*/React.createElement(XAxis, null), /*#__PURE__*/React.createElement(LabelsXAxis, null), /*#__PURE__*/React.createElement(HorizontalGuides, null), polygonPoints.map(function (points, idx) {
+  }))), currentX && /*#__PURE__*/React.createElement(VerticalCurrentX, {
+    x: currentX
+  }), /*#__PURE__*/React.createElement(XAxis, null), /*#__PURE__*/React.createElement(LabelsXAxis, null), /*#__PURE__*/React.createElement(HorizontalGuides, null), polygonPoints.map(function (points, idx) {
     if (visible[idx]) {
       return /*#__PURE__*/React.createElement(Fragment, null, /*#__PURE__*/React.createElement("polygon", {
         key: idx,
