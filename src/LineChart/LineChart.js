@@ -372,7 +372,6 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
         onMouseMove={(event) => {
           // console.log(event.clientX - bounds.x)
           const rect = document.getElementById('graphcontainer').getBoundingClientRect();
-          console.log(maxX)
           const coordX = (event.clientX-rect.x)/rect.width * width
           // console.log(coordX)
           // console.log(xPointCoords[0])
@@ -415,15 +414,14 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
 
         {polygonPoints.map((points, idx) => {
           if (visible[idx]) {
-            return (<>
+            return (
                <polygon key={idx} points={points} fill={`url('#three_opacity')`}/>
-              </>
             )
           }
         })}
         {points.map((points, idx) => {
           if (visible[idx]) {
-            return (<>
+            return (
               <polyline
                 key={idx}
                 fill='none'
@@ -433,8 +431,6 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
                 strokeDasharray='1'
                 points={points}
               />
-
-              </>
             )
           }
         })}
@@ -444,7 +440,6 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
           if (visible[idxParent]) {
             return coords.map((coord, idx) => {
               return (
-                <>
                   <Mark
                     key={idx}
                     coord={coord}
@@ -457,29 +452,23 @@ export const LineChart = ({ height, width, padding, data, labels, hourly=true })
                     //   setTooltipVisible(null)
                     // }}
                   />
-                  
-
-                </>
               )
             }
             )
           }
 
         })}     
+        
+        
         {pointsCoords.map((coords, idx) => {
             if (visible[idx]) {
               return coords.map((coord, idx)=> {
                 const quantity = coord[2].toFixed(2)
-                return <>
-                  { tooltipVisible == `${coord[0]}-${coord[3]}` && 
-                  <> 
+                return (
+                   tooltipVisible == `${coord[0]}-${coord[3]}` && 
                     <Tooltips key={idx} x={coord[0]} y={coord[1]} label={`${quantity} kW`} sublabel={coord[4]}>
                     </Tooltips>
-                  </>
-
-                  }
-
-                </>
+                )
               }
               )
             }

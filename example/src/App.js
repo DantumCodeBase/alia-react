@@ -228,6 +228,15 @@ const App = () => {
       <Button>Login</Button>
       <div style={{ padding: 100, maxWidth: 700 }}>
         <LineChart
+          key="uno"
+          data={chartData}
+          labels={labels}
+          height={200}
+          width={800}
+          padding={0}
+        />
+          <LineChart
+          key="dos"
           data={chartData}
           labels={labels}
           height={200}

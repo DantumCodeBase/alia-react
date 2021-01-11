@@ -3,7 +3,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var React = require('react');
 var React__default = _interopDefault(React);
 
-var styles = {"test":"_3ybTi"};
+var styles = {"test":"_styles-module__test__3ybTi"};
 
 var Input = function Input() {
   return /*#__PURE__*/React__default.createElement("input", {
@@ -414,7 +414,6 @@ var LineChart = function LineChart(_ref) {
     viewBox: "0 0 " + width + " " + (height + 100),
     onMouseMove: function onMouseMove(event) {
       var rect = document.getElementById('graphcontainer').getBoundingClientRect();
-      console.log(maxX);
       var coordX = (event.clientX - rect.x) / rect.width * width;
       var curr = xPointCoords[0][0];
 
@@ -453,15 +452,15 @@ var LineChart = function LineChart(_ref) {
     x: currentX
   }), /*#__PURE__*/React__default.createElement(XAxis, null), /*#__PURE__*/React__default.createElement(LabelsXAxis, null), /*#__PURE__*/React__default.createElement(HorizontalGuides, null), polygonPoints.map(function (points, idx) {
     if (visible[idx]) {
-      return /*#__PURE__*/React__default.createElement(React.Fragment, null, /*#__PURE__*/React__default.createElement("polygon", {
+      return /*#__PURE__*/React__default.createElement("polygon", {
         key: idx,
         points: points,
         fill: "url('#three_opacity')"
-      }));
+      });
     }
   }), points.map(function (points, idx) {
     if (visible[idx]) {
-      return /*#__PURE__*/React__default.createElement(React.Fragment, null, /*#__PURE__*/React__default.createElement("polyline", {
+      return /*#__PURE__*/React__default.createElement("polyline", {
         key: idx,
         fill: "none",
         stroke: colors[idx],
@@ -469,30 +468,30 @@ var LineChart = function LineChart(_ref) {
         strokeLinecap: "round",
         strokeDasharray: "1",
         points: points
-      }));
+      });
     }
   }), pointsCoords.map(function (coords, idxParent) {
     if (visible[idxParent]) {
       return coords.map(function (coord, idx) {
-        return /*#__PURE__*/React__default.createElement(React.Fragment, null, /*#__PURE__*/React__default.createElement(Mark, {
+        return /*#__PURE__*/React__default.createElement(Mark, {
           key: idx,
           coord: coord,
           idx: idx,
           color: colors[idxParent]
-        }));
+        });
       });
     }
   }), pointsCoords.map(function (coords, idx) {
     if (visible[idx]) {
       return coords.map(function (coord, idx) {
         var quantity = coord[2].toFixed(2);
-        return /*#__PURE__*/React__default.createElement(React.Fragment, null, tooltipVisible == coord[0] + "-" + coord[3] && /*#__PURE__*/React__default.createElement(React.Fragment, null, /*#__PURE__*/React__default.createElement(Tooltips, {
+        return tooltipVisible == coord[0] + "-" + coord[3] && /*#__PURE__*/React__default.createElement(Tooltips, {
           key: idx,
           x: coord[0],
           y: coord[1],
           label: quantity + " kW",
           sublabel: coord[4]
-        })));
+        });
       });
     }
   })));
