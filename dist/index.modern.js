@@ -79,6 +79,8 @@ function _createForOfIteratorHelperLoose(o, allowArrayLike) {
 }
 
 var LineChart = function LineChart(_ref) {
+  var _Math$abs;
+
   var height = _ref.height,
       width = _ref.width,
       padding = _ref.padding,
@@ -124,14 +126,14 @@ var LineChart = function LineChart(_ref) {
       return e.y;
     }));
   })) * 1.25;
-  var maxZeros = Math.pow(10, maxValue.toFixed().toString().length - 1);
+  var maxZeros = Math.pow(10, (maxValue === null || maxValue === void 0 ? void 0 : maxValue.toFixed().toString().length) - 1);
   var maxY = Math.ceil(maxValue / maxZeros) * maxZeros || 5;
   var minValue = Math.min.apply(Math, data.map(function (d) {
     return Math.min.apply(Math, d.map(function (e) {
       return e.y;
     }));
   })) * 1.25;
-  var minZeros = Math.pow(10, Math.abs(minValue).toFixed().toString().length - 1);
+  var minZeros = Math.pow(10, ((_Math$abs = Math.abs(minValue)) === null || _Math$abs === void 0 ? void 0 : _Math$abs.toFixed().toString().length) - 1);
   var minY = Math.floor(minValue / minZeros) * minZeros;
   var zeroY = 200;
 
@@ -355,9 +357,9 @@ var LineChart = function LineChart(_ref) {
         _ref5$y = _ref5.y,
         y = _ref5$y === void 0 ? 70 : _ref5$y,
         _ref5$label = _ref5.label,
-        label = _ref5$label === void 0 ? "545.245 MW" : _ref5$label,
+        label = _ref5$label === void 0 ? '545.245 MW' : _ref5$label,
         _ref5$sublabel = _ref5.sublabel,
-        sublabel = _ref5$sublabel === void 0 ? "3:24:02" : _ref5$sublabel;
+        sublabel = _ref5$sublabel === void 0 ? '3:24:02' : _ref5$sublabel;
     var rectPos = [x - 35, y - 40];
     var height = 25;
     var width = 50;
@@ -481,7 +483,9 @@ var LineChart = function LineChart(_ref) {
   }), pointsCoords.map(function (coords, idx) {
     if (visible[idx]) {
       return coords.map(function (coord, idx) {
-        var quantity = coord[2].toFixed(2);
+        var _coord$;
+
+        var quantity = (_coord$ = coord[2]) === null || _coord$ === void 0 ? void 0 : _coord$.toFixed(2);
         return tooltipVisible == coord[0] + "-" + coord[3] && /*#__PURE__*/React.createElement(Tooltips, {
           key: idx,
           x: coord[0],
